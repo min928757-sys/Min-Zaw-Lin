@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Mini App</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: #1e293b; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h1 { color: #38bdf8; }
+        .status-box { margin: 20px 0; padding: 15px; border-radius: 8px; font-weight: bold; }
+        .pending { background-color: #f59e0b; color: #ffffff; }
+        .approved { background-color: #10b981; color: #ffffff; }
+        .hidden { display: none; }
+        .video-container { margin-top: 20px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; }
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; transition: 0.3s; }
+        button:hover { background: #0ea5e9; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Trading Academy</h1>
+        <p>User ID: <span id="user-id-display">Loading...</span></p>
+
+        <hr style="border: 0.5px solid #334155;">
+
+        <div id="locked-section">
+            <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
+            <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
+            <p>KPay Number: <b>09xxxxxxxxx</b></p>
+            <button onclick="window.open('https://t.me/your_telegram_username')">Screenshot ပို့ရန်</button>
+        </div>
+
+        <div id="unlocked-section" class="hidden">
+            <div class="status-box approved">Welcome, Trader! ✅</div>
+            <h3>Lesson 1: Smart Money Concepts</h3>
+            <div class="video-container">
+                <iframe width="100%" height="250" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p style="margin-top: 15px;">ဒုတိယပိုင်းကို ဆက်လက်လေ့လာပါ...</p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // --- ဤနေရာတွင် သင်၏ Firebase Config ကို အစားထိုးပါ ---
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // စမ်းသပ်ရန် User ID တစ်ခု (နောက်ပိုင်းတွင် Telegram ID နဲ့ အစားထိုးနိုင်သည်)
+        const myUserId = "1234567"; 
+        document.getElementById('user-id-display').innerText = myUserId;
+
+        // Database ကို Real-time စောင့်ကြည့်ခြင်း (သင် Approve ပေးလိုက်တာနဲ့ ချက်ချင်း ပွင့်သွားမည်)
+        const userRef = doc(db, "users", myUserId);
+
+        onSnapshot(userRef, (docSnap) => {
+            if (docSnap.exists() && docSnap.data().is_approved === true) {
+                document.getElementById('locked-section').classList.add('hidden');
+                document.getElementById('unlocked-section').classList.remove('hidden');
+            } else {
+                document.getElementById('locked-section').classList.remove('hidden');
+                document.getElementById('unlocked-section').classList.add('hidden');
+            }
+        });
+    </script>
+</body>
+</html>
