@@ -64,7 +64,20 @@
         // စမ်းသပ်ရန် User ID တစ်ခု (နောက်ပိုင်းတွင် Telegram ID နဲ့ အစားထိုးနိုင်သည်)
         const tg = window.Telegram.WebApp;
 tg.expand();
-const myUserId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id.toString() : "Guest";
+const myUserId = // Telegram WebApp ကို ခေါ်ယူခြင်း
+const tg = window.Telegram.WebApp;
+tg.ready(); // App အသင့်ဖြစ်ကြောင်း အကြောင်းကြားခြင်း
+tg.expand(); // Screen အပြည့်ချဲ့ခြင်း
+
+// ID ကို ရယူခြင်း
+let myUserId = "Guest";
+
+if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+    myUserId = tg.initDataUnsafe.user.id.toString();
+}
+
+document.getElementById('user-id-display').innerText = myUserId;
+
  
         document.getElementById('user-id-display').innerText = myUserId;
 
