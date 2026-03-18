@@ -23,15 +23,26 @@
 
     <div class="container">
         <h1>Trading Academy</h1>
-        <p>User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span></p>
+        <p>User ID: <p>User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
+   <button onclick="copyID()" style="width:auto; padding:2px 10px; font-size:12px; margin-left:10px;">Copy ID</button>
+</p>
+
+<script>
+function copyID() {
+    const id = document.getElementById('user-id-display').innerText;
+    navigator.clipboard.writeText(id);
+    alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+}
+</script>
+
 
         <hr style="border: 0.5px solid #334155; margin: 20px 0;">
 
         <div id="locked-section">
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
             <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
-            <p>KPay Number: <b>09xxxxxxxxx</b></p>
-            <button onclick="window.open('https://t.me/your_telegram_username')">Screenshot ပို့ရန်</button>
+            <p>KPay Number: <b>09456507877</b></p>
+            <button onclick="window.open('https://t.me/@Karam4565')">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
