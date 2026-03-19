@@ -15,26 +15,18 @@
         .hidden { display: none; }
         .video-container { margin-top: 20px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; }
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
+        .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Trading Academy</h1>
-        <p>User ID: <p>User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
-   <button onclick="copyID()" style="width:auto; padding:2px 10px; font-size:12px; margin-left:10px;">Copy ID</button>
-</p>
-
-<script>
-function copyID() {
-    const id = document.getElementById('user-id-display').innerText;
-    navigator.clipboard.writeText(id);
-    alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
-}
-</script>
-
+        <p>User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
+           <button onclick="copyID()" class="copy-btn">Copy ID</button>
+        </p>
 
         <hr style="border: 0.5px solid #334155; margin: 20px 0;">
 
@@ -47,13 +39,22 @@ function copyID() {
 
         <div id="unlocked-section" class="hidden">
             <div class="status-box approved">Welcome, Trader! ✅</div>
-            <h3>Lesson 1: Smart Money Concepts</h3>
+            <h3>Lesson 1: Market Structure (The Foundation)</h3>
             <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allowfullscreen></iframe>
+                <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
             </div>
-            <p style="margin-top: 15px;">ဒုတိယပိုင်းကို ဆက်လက်လေ့လာပါ...</p>
+            <p style="margin-top: 15px; color: #cbd5e1;">ဗီဒီယိုကြည့်ပြီးပါက Quiz ဖြေဆိုနိုင်ပါပြီ...</p>
+            <button onclick="alert('Quiz coming soon!')" style="background: #10b981;">Take Quiz</button>
         </div>
     </div>
+
+    <script>
+        function copyID() {
+            const id = document.getElementById('user-id-display').innerText;
+            navigator.clipboard.writeText(id);
+            alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+        }
+    </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -77,7 +78,6 @@ function copyID() {
         tg.ready();
         tg.expand();
 
-        // Get User ID
         let myUserId = "Guest";
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             myUserId = tg.initDataUnsafe.user.id.toString();
@@ -85,7 +85,6 @@ function copyID() {
         
         document.getElementById('user-id-display').innerText = myUserId;
 
-        // Firebase Real-time Listener
         if (myUserId !== "Guest") {
             const userRef = doc(db, "users", myUserId);
             onSnapshot(userRef, (docSnap) => {
