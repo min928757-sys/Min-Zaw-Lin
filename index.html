@@ -15,15 +15,12 @@
         .hidden { display: none; }
         .video-container { margin-top: 20px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
         button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
         .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
-
-        .quiz-option { background: #334155; color: white; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
-        #feedback-text { margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -40,7 +37,7 @@
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
             <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
             <p>KPay Number: <b>09456507877</b></p>
-            <button onclick="contactAdmin()">Screenshot ပို့ရန်</button>
+            <button id="screenshot-btn">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
@@ -49,15 +46,13 @@
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
             </div>
-
             <hr style="border: 0.5px solid #334155; margin: 30px 0;">
-
             <div id="quiz-area" style="text-align: left;">
                 <h4 style="color: #38bdf8; text-align: center;">Lesson 1 Quiz</h4>
                 <div id="question-container">
                     <p id="question-text" style="font-size: 16px; font-weight: bold; margin-bottom: 15px;"></p>
                     <div id="options-list"></div>
-                    <p id="feedback-text"></p>
+                    <p id="feedback-text" style="margin-top: 10px; font-weight: bold;"></p>
                     <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
                 </div>
                 <div id="quiz-result" class="hidden" style="text-align: center;">
@@ -72,20 +67,21 @@
         const tg = window.Telegram.WebApp;
         tg.ready();
 
-        function contactAdmin() {
-            // Telegram WebApp အတွင်းမှာ Link ဖွင့်ဖို့ အကောင်းဆုံးနည်းလမ်း
+        // Screenshot ပို့ရန် Link ပြဿနာကို ဖြေရှင်းခြင်း
+        document.getElementById('screenshot-btn').onclick = function() {
+            // Telegram app အတွင်းမှာ Link ကို တိုက်ရိုက်ပွင့်စေရန်
             tg.openTelegramLink("https://t.me/Karam4565");
-        }
+        };
 
         function copyID() {
             const id = document.getElementById('user-id-display').innerText;
             if(id !== "Loading...") {
                 navigator.clipboard.writeText(id);
-                alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+                tg.showAlert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
             }
         }
 
-        // --- Quiz Logic (ယခင်အတိုင်း) ---
+        // Quiz Logic (အပေါ်ကအတိုင်း)
         const quizData = [
             { q: "၁။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အရင်အမြင့်ဆုံး (Previous High) ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS (Break of Structure)", "CHoCH (Change of Character)", "Liquidity Sweep"], correct: 0 },
             { q: "၂။ Downtrend တစ်ခု ဖြစ်ပေါ်ဖို့အတွက် ဘယ်လို Structure မျိုး လိုအပ်သလဲ?", a: ["Higher High & Higher Low", "Lower High & Lower Low", "Equal High & Equal Low"], correct: 1 },
@@ -94,7 +90,7 @@
             { q: "၅။ 'Higher High' တွေ ဆက်တိုက် ဖြစ်ပေါ်နေခြင်းဟာ ဘယ်လို Market မျိုးလဲ?", a: ["Bearish Market", "Bullish Market", "Sideways Market"], correct: 1 }
         ];
 
-        let currentIdx = 0; let score = 0; let canClick = true;
+        let currentIdx = 0, score = 0, canClick = true;
 
         function loadQuiz() {
             canClick = true;
@@ -108,38 +104,34 @@
                 const btn = document.createElement('button');
                 btn.innerText = opt;
                 btn.className = "quiz-option";
-                btn.onclick = () => handleAnswer(i, btn);
+                btn.onclick = () => {
+                    if (!canClick) return;
+                    canClick = false;
+                    const correctIdx = quizData[currentIdx].correct;
+                    if (i === correctIdx) {
+                        btn.classList.add('correct');
+                        document.getElementById('feedback-text').innerText = "မှန်ကန်ပါတယ်! ✅";
+                        document.getElementById('feedback-text').style.color = "#10b981";
+                        score++;
+                    } else {
+                        btn.classList.add('wrong');
+                        list.children[correctIdx].classList.add('correct');
+                        document.getElementById('feedback-text').innerText = "မှားယွင်းပါတယ်! ❌";
+                        document.getElementById('feedback-text').style.color = "#ef4444";
+                    }
+                    document.getElementById('next-btn').classList.remove('hidden');
+                };
                 list.appendChild(btn);
             });
         }
 
-        function handleAnswer(idx, btn) {
-            if (!canClick) return;
-            canClick = false;
-            const correctIdx = quizData[currentIdx].correct;
-            const feedback = document.getElementById('feedback-text');
-            const allBtns = document.querySelectorAll('.quiz-option');
-            if (idx === correctIdx) {
-                btn.classList.add('correct');
-                feedback.innerText = "မှန်ကန်ပါတယ်! ✅";
-                feedback.style.color = "#10b981";
-                score++;
-            } else {
-                btn.classList.add('wrong');
-                allBtns[correctIdx].classList.add('correct');
-                feedback.innerText = "မှားယွင်းပါတယ်! ❌ အဖြေမှန်မှာ " + quizData[currentIdx].a[correctIdx] + " ဖြစ်ပါတယ်။";
-                feedback.style.color = "#ef4444";
-            }
-            document.getElementById('next-btn').classList.remove('hidden');
-        }
-
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizData.length) { loadQuiz(); } 
+            if (currentIdx < quizData.length) loadQuiz();
             else {
                 document.getElementById('question-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
-                document.getElementById('final-score').innerText = "သင်၏ရမှတ်: " + score + " / " + quizData.length;
+                document.getElementById('final-score').innerText = "ရမှတ်: " + score + " / " + quizData.length;
             }
         }
 
@@ -176,14 +168,10 @@
         document.getElementById('user-id-display').innerText = myUserId;
 
         if (myUserId !== "Guest") {
-            const userRef = doc(db, "users", myUserId);
-            onSnapshot(userRef, (docSnap) => {
+            onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
-                } else {
-                    document.getElementById('locked-section').classList.remove('hidden');
-                    document.getElementById('unlocked-section').classList.add('hidden');
                 }
             });
         }
