@@ -15,9 +15,16 @@
         .hidden { display: none; }
         .video-container { margin-top: 20px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
         button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
         .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
+
+        /* Quiz Styles */
+        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; }
+        .correct { background: #10b981 !important; color: white !important; }
+        .wrong { background: #ef4444 !important; color: white !important; }
+        #feedback-text { margin-top: 10px; font-weight: bold; min-height: 20px; }
     </style>
 </head>
 <body>
@@ -34,7 +41,7 @@
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
             <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
             <p>KPay Number: <b>09456507877</b></p>
-            <button onclick="window.open('https://t.me/@Karam4565')">Screenshot ပို့ရန်</button>
+            <button onclick="window.open('https://t.me/Karam4565')">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
@@ -43,24 +50,113 @@
             <div class="video-container">
                 <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
             </div>
-            <p style="margin-top: 15px; color: #cbd5e1;">ဗီဒီယိုကြည့်ပြီးပါက Quiz ဖြေဆိုနိုင်ပါပြီ...</p>
-            <button onclick="alert('Quiz coming soon!')" style="background: #10b981;">Take Quiz</button>
+
+            <hr style="border: 0.5px solid #334155; margin: 30px 0;">
+
+            <div id="quiz-area" style="text-align: left;">
+                <h4 style="color: #38bdf8; text-align: center;">Lesson 1 Quiz</h4>
+                <div id="question-container">
+                    <p id="question-text" style="font-size: 16px; font-weight: bold; margin-bottom: 15px;"></p>
+                    <div id="options-list"></div>
+                    <p id="feedback-text"></p>
+                    <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
+                </div>
+
+                <div id="quiz-result" class="hidden" style="text-align: center;">
+                    <h2 id="final-score" style="color: #10b981;"></h2>
+                    <button onclick="restartQuiz()" style="background: #64748b; width: auto;">ပြန်ဖြေမည်</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <script>
+        // Quiz Data
+        const quizData = [
+            { q: "၁။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အရင်အမြင့်ဆုံး (Previous High) ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS (Break of Structure)", "CHoCH (Change of Character)", "Liquidity Sweep"], correct: 0 },
+            { q: "၂။ Downtrend တစ်ခု ဖြစ်ပေါ်ဖို့အတွက် ဘယ်လို Structure မျိုး လိုအပ်သလဲ?", a: ["Higher High & Higher Low", "Lower High & Lower Low", "Equal High & Equal Low"], correct: 1 },
+            { q: "၃။ Trend တစ်ခု ပြောင်းလဲတော့မယ်ဆိုတာကို ပထမဆုံး သိနိုင်တဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 },
+            { q: "၄။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အောက်ကို ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher High", "Higher Low"], correct: 2 },
+            { q: "၅။ 'Higher High' တွေ ဆက်တိုက် ဖြစ်ပေါ်နေခြင်းဟာ ဘယ်လို Market မျိုးလဲ?", a: ["Bearish Market", "Bullish Market", "Sideways Market"], correct: 1 }
+        ];
+
+        let currentIdx = 0;
+        let score = 0;
+        let canClick = true;
+
+        function loadQuiz() {
+            canClick = true;
+            const item = quizData[currentIdx];
+            document.getElementById('question-text').innerText = item.q;
+            document.getElementById('feedback-text').innerText = "";
+            document.getElementById('next-btn').classList.add('hidden');
+            
+            const list = document.getElementById('options-list');
+            list.innerHTML = "";
+            
+            item.a.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.innerText = opt;
+                btn.className = "quiz-option";
+                btn.onclick = () => handleAnswer(i, btn);
+                list.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(idx, btn) {
+            if (!canClick) return;
+            canClick = false;
+            
+            const correctIdx = quizData[currentIdx].correct;
+            const feedback = document.getElementById('feedback-text');
+            const allBtns = document.querySelectorAll('.quiz-option');
+
+            if (idx === correctIdx) {
+                btn.classList.add('correct');
+                feedback.innerText = "မှန်ကန်ပါတယ်! ✅";
+                feedback.style.color = "#10b981";
+                score++;
+            } else {
+                btn.classList.add('wrong');
+                allBtns[correctIdx].classList.add('correct'); // အဖြေမှန်ကို ပြပေးမယ်
+                feedback.innerText = "မှားယွင်းပါတယ်! ❌ အဖြေမှန်မှာ " + quizData[currentIdx].a[correctIdx] + " ဖြစ်ပါတယ်။";
+                feedback.style.color = "#ef4444";
+            }
+            document.getElementById('next-btn').classList.remove('hidden');
+        }
+
+        function nextQuestion() {
+            currentIdx++;
+            if (currentIdx < quizData.length) {
+                loadQuiz();
+            } else {
+                document.getElementById('question-container').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('final-score').innerText = "သင်၏ရမှတ်: " + score + " / " + quizData.length;
+            }
+        }
+
+        function restartQuiz() {
+            currentIdx = 0;
+            score = 0;
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            loadQuiz();
+        }
+
         function copyID() {
             const id = document.getElementById('user-id-display').innerText;
             navigator.clipboard.writeText(id);
             alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
         }
+
+        loadQuiz();
     </script>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Config
         const firebaseConfig = {
             apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok",
             authDomain: "trading-app-69b9d.firebaseapp.com",
@@ -72,8 +168,6 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        // Telegram WebApp Setup
         const tg = window.Telegram.WebApp;
         tg.ready();
         tg.expand();
@@ -82,7 +176,6 @@
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             myUserId = tg.initDataUnsafe.user.id.toString();
         }
-        
         document.getElementById('user-id-display').innerText = myUserId;
 
         if (myUserId !== "Guest") {
