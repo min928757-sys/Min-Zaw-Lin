@@ -64,13 +64,19 @@
     </div>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.ready();
+    const tg = window.Telegram.WebApp;
+    tg.ready();
 
-        // Screenshot ပို့ရန် Link ပြဿနာကို ဖြေရှင်းခြင်း
-        document.getElementById('screenshot-btn').onclick = function() {
-            // Telegram app အတွင်းမှာ Link ကို တိုက်ရိုက်ပွင့်စေရန်
-            tg.openTelegramLink("https://t.me/Karam4565");
+    // Screenshot ပို့ရန် Link FIX (Telegram + Browser fallback)
+    document.getElementById('screenshot-btn').onclick = function() {
+        const telegramLink = "https://t.me/Karam4565";
+
+        try {
+            tg.openTelegramLink(telegramLink);
+        } catch (e) {
+            window.open(telegramLink, "_blank");
+        }
+    };
         };
 
         function copyID() {
