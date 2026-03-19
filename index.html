@@ -21,7 +21,7 @@
         .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
 
         /* Quiz Styles */
-        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; }
+        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; color: white !important; }
         .wrong { background: #ef4444 !important; color: white !important; }
         #feedback-text { margin-top: 10px; font-weight: bold; min-height: 20px; }
@@ -118,7 +118,7 @@
                 score++;
             } else {
                 btn.classList.add('wrong');
-                allBtns[correctIdx].classList.add('correct'); // အဖြေမှန်ကို ပြပေးမယ်
+                allBtns[correctIdx].classList.add('correct');
                 feedback.innerText = "မှားယွင်းပါတယ်! ❌ အဖြေမှန်မှာ " + quizData[currentIdx].a[correctIdx] + " ဖြစ်ပါတယ်။";
                 feedback.style.color = "#ef4444";
             }
@@ -146,8 +146,10 @@
 
         function copyID() {
             const id = document.getElementById('user-id-display').innerText;
-            navigator.clipboard.writeText(id);
-            alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+            if(id !== "Loading...") {
+                navigator.clipboard.writeText(id);
+                alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+            }
         }
 
         loadQuiz();
