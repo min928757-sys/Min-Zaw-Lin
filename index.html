@@ -20,11 +20,10 @@
         button:hover { background: #0ea5e9; }
         .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
 
-        /* Quiz Styles */
-        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
-        .correct { background: #10b981 !important; color: white !important; }
-        .wrong { background: #ef4444 !important; color: white !important; }
-        #feedback-text { margin-top: 10px; font-weight: bold; min-height: 20px; }
+        .quiz-option { background: #334155; color: white; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        .correct { background: #10b981 !important; }
+        .wrong { background: #ef4444 !important; }
+        #feedback-text { margin-top: 10px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -41,7 +40,7 @@
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
             <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
             <p>KPay Number: <b>09456507877</b></p>
-            <button onclick="window.open('https://t.me/Karam4565')">Screenshot ပို့ရန်</button>
+            <button onclick="contactAdmin()">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
@@ -61,7 +60,6 @@
                     <p id="feedback-text"></p>
                     <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
                 </div>
-
                 <div id="quiz-result" class="hidden" style="text-align: center;">
                     <h2 id="final-score" style="color: #10b981;"></h2>
                     <button onclick="restartQuiz()" style="background: #64748b; width: auto;">ပြန်ဖြေမည်</button>
@@ -71,7 +69,23 @@
     </div>
 
     <script>
-        // Quiz Data
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+
+        function contactAdmin() {
+            // Telegram WebApp အတွင်းမှာ Link ဖွင့်ဖို့ အကောင်းဆုံးနည်းလမ်း
+            tg.openTelegramLink("https://t.me/Karam4565");
+        }
+
+        function copyID() {
+            const id = document.getElementById('user-id-display').innerText;
+            if(id !== "Loading...") {
+                navigator.clipboard.writeText(id);
+                alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+            }
+        }
+
+        // --- Quiz Logic (ယခင်အတိုင်း) ---
         const quizData = [
             { q: "၁။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အရင်အမြင့်ဆုံး (Previous High) ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS (Break of Structure)", "CHoCH (Change of Character)", "Liquidity Sweep"], correct: 0 },
             { q: "၂။ Downtrend တစ်ခု ဖြစ်ပေါ်ဖို့အတွက် ဘယ်လို Structure မျိုး လိုအပ်သလဲ?", a: ["Higher High & Higher Low", "Lower High & Lower Low", "Equal High & Equal Low"], correct: 1 },
@@ -80,9 +94,7 @@
             { q: "၅။ 'Higher High' တွေ ဆက်တိုက် ဖြစ်ပေါ်နေခြင်းဟာ ဘယ်လို Market မျိုးလဲ?", a: ["Bearish Market", "Bullish Market", "Sideways Market"], correct: 1 }
         ];
 
-        let currentIdx = 0;
-        let score = 0;
-        let canClick = true;
+        let currentIdx = 0; let score = 0; let canClick = true;
 
         function loadQuiz() {
             canClick = true;
@@ -90,10 +102,8 @@
             document.getElementById('question-text').innerText = item.q;
             document.getElementById('feedback-text').innerText = "";
             document.getElementById('next-btn').classList.add('hidden');
-            
             const list = document.getElementById('options-list');
             list.innerHTML = "";
-            
             item.a.forEach((opt, i) => {
                 const btn = document.createElement('button');
                 btn.innerText = opt;
@@ -106,11 +116,9 @@
         function handleAnswer(idx, btn) {
             if (!canClick) return;
             canClick = false;
-            
             const correctIdx = quizData[currentIdx].correct;
             const feedback = document.getElementById('feedback-text');
             const allBtns = document.querySelectorAll('.quiz-option');
-
             if (idx === correctIdx) {
                 btn.classList.add('correct');
                 feedback.innerText = "မှန်ကန်ပါတယ်! ✅";
@@ -127,9 +135,8 @@
 
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizData.length) {
-                loadQuiz();
-            } else {
+            if (currentIdx < quizData.length) { loadQuiz(); } 
+            else {
                 document.getElementById('question-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
                 document.getElementById('final-score').innerText = "သင်၏ရမှတ်: " + score + " / " + quizData.length;
@@ -137,19 +144,10 @@
         }
 
         function restartQuiz() {
-            currentIdx = 0;
-            score = 0;
+            currentIdx = 0; score = 0;
             document.getElementById('question-container').classList.remove('hidden');
             document.getElementById('quiz-result').classList.add('hidden');
             loadQuiz();
-        }
-
-        function copyID() {
-            const id = document.getElementById('user-id-display').innerText;
-            if(id !== "Loading...") {
-                navigator.clipboard.writeText(id);
-                alert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
-            }
         }
 
         loadQuiz();
@@ -170,10 +168,7 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
-
+        
         let myUserId = "Guest";
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             myUserId = tg.initDataUnsafe.user.id.toString();
