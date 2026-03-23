@@ -7,21 +7,26 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; margin: 0; }
-        .container { max-width: 500px; margin: auto; background: #1e293b; padding: 30px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
-        h1 { color: #38bdf8; margin-bottom: 10px; }
-        .status-box { margin: 20px 0; padding: 15px; border-radius: 8px; font-weight: bold; }
+        .container { max-width: 550px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        h1 { color: #38bdf8; margin-bottom: 10px; font-size: 24px; }
+        .status-box { margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; }
         .pending { background-color: #f59e0b; color: #ffffff; }
-        .approved { background-color: #10 b981; color: #ffffff; }
-        .hidden { display: none; }
-        .video-container { margin-top: 20px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
+        .approved { background-color: #10b981; color: #ffffff; }
+        .hidden { display: none !important; }
+        
+        /* Video Styling */
+        .video-container { margin-top: 15px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 25px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 16px; width: 100%; transition: 0.3s; margin-top: 10px; }
+        /* Buttons */
+        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
-        .copy-btn { width: auto; padding: 5px 15px; font-size: 12px; margin-left: 10px; display: inline-block; }
+        .nav-btn { background: #334155; color: #fff; margin: 5px; width: 45%; display: inline-block; }
+        .nav-btn.active { background: #38bdf8; color: #0f172a; }
+        .copy-btn { width: auto; padding: 5px 12px; font-size: 12px; margin-left: 8px; display: inline-block; }
 
-        /* Quiz Styles */
-        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 10px 15px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        /* Quiz Styling */
+        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
         #feedback-text { margin-top: 10px; font-weight: bold; min-height: 20px; }
@@ -31,40 +36,56 @@
 
     <div class="container">
         <h1>Trading Academy</h1>
-        <p>User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
-           <button onclick="copyID()" class="copy-btn">Copy ID</button>
+        <p style="font-size: 14px;">User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
+           <button onclick="copyID()" class="copy-btn">Copy</button>
         </p>
 
-        <hr style="border: 0.5px solid #334155; margin: 20px 0;">
+        <hr style="border: 0.5px solid #334155; margin: 15px 0;">
 
         <div id="locked-section">
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
             <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
-            <p>KPay Number: <b>09456507877</b></p>
+            <p>KPay: <b>09456507877</b></p>
             <button id="screenshot-btn">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
             <div class="status-box approved">Welcome, Trader! ✅</div>
-            <h3>Lesson 1: Market Structure (The Foundation)</h3>
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
+            
+            <div style="margin-bottom: 20px;">
+                <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">Lesson 1</button>
+                <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">Lesson 2</button>
             </div>
 
-            <hr style="border: 0.5px solid #334155; margin: 30px 0;">
+            <div id="lesson-1-content">
+                <h3 style="color:#38bdf8;">Lesson 1: Market Structure</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p style="font-size: 14px; margin-top:10px;">ဗီဒီယိုကြည့်ပြီးပါက Quiz ဖြေဆိုပါ</p>
+                <button onclick="startQuiz(1)">Take Lesson 1 Quiz</button>
+            </div>
 
-            <div id="quiz-area" style="text-align: left;">
-                <h4 style="color: #38bdf8; text-align: center;">Lesson 1 Quiz</h4>
+            <div id="lesson-2-content" class="hidden">
+                <h3 style="color:#38bdf8;">Lesson 2: Order Blocks</h3>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/DDLsFro2bpc" frameborder="0" allowfullscreen></iframe>
+                </div>
+                <p style="font-size: 14px; margin-top:10px;">ဗီဒီယိုကြည့်ပြီးပါက Quiz ဖြေဆိုပါ</p>
+                <button onclick="startQuiz(2)">Take Lesson 2 Quiz</button>
+            </div>
+
+            <div id="quiz-area" class="hidden" style="text-align: left; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
+                <h4 id="quiz-title" style="color: #38bdf8; text-align: center;"></h4>
                 <div id="question-container">
-                    <p id="question-text" style="font-size: 16px; font-weight: bold; margin-bottom: 15px;"></p>
+                    <p id="question-text" style="font-weight: bold; margin-bottom: 15px;"></p>
                     <div id="options-list"></div>
                     <p id="feedback-text"></p>
                     <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
                 </div>
-
                 <div id="quiz-result" class="hidden" style="text-align: center;">
                     <h2 id="final-score" style="color: #10b981;"></h2>
-                    <button onclick="restartQuiz()" style="background: #64748b; width: auto;">ပြန်ဖြေမည်</button>
+                    <button onclick="backToLessons()" style="background: #64748b;">Back to Lessons</button>
                 </div>
             </div>
         </div>
@@ -73,34 +94,59 @@
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
-
-        // ပေးထားသော Group Link သို့ သွားရန် Native Function
-        document.getElementById('screenshot-btn').onclick = function() {
-            tg.openTelegramLink("https://t.me/+cbvtPsUU2gExYmY1");
-        };
+        document.getElementById('screenshot-btn').onclick = () => tg.openTelegramLink("https://t.me/+cbvtPsUU2gExYmY1");
 
         function copyID() {
             const id = document.getElementById('user-id-display').innerText;
             if(id !== "Loading...") {
                 navigator.clipboard.writeText(id);
-                tg.showAlert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။ Admin ဆီ ပို့ပေးပါ။");
+                tg.showAlert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။");
             }
         }
 
+        function showLesson(num) {
+            document.getElementById('lesson-1-content').classList.toggle('hidden', num !== 1);
+            document.getElementById('lesson-2-content').classList.toggle('hidden', num !== 2);
+            document.getElementById('btn-l1').classList.toggle('active', num === 1);
+            document.getElementById('btn-l2').classList.toggle('active', num === 2);
+            document.getElementById('quiz-area').classList.add('hidden');
+        }
+
         // Quiz Logic
-        const quizData = [
-            { q: "၁။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အရင်အမြင့်ဆုံး (Previous High) ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS (Break of Structure)", "CHoCH (Change of Character)", "Liquidity Sweep"], correct: 0 },
-            { q: "၂။ Downtrend တစ်ခု ဖြစ်ပေါ်ဖို့အတွက် ဘယ်လို Structure မျိုး လိုအပ်သလဲ?", a: ["Higher High & Higher Low", "Lower High & Lower Low", "Equal High & Equal Low"], correct: 1 },
-            { q: "၃။ Trend တစ်ခု ပြောင်းလဲတော့မယ်ဆိုတာကို ပထမဆုံး သိနိုင်တဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 },
-            { q: "၄။ Uptrend တစ်ခုမှာ ဈေးနှုန်းက အောက်ကို ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher High", "Higher Low"], correct: 2 },
-            { q: "၅။ 'Higher High' တွေ ဆက်တိုက် ဖြစ်ပေါ်နေခြင်းဟာ ဘယ်လို Market မျိုးလဲ?", a: ["Bearish Market", "Bullish Market", "Sideways Market"], correct: 1 }
-        ];
+        const lessonsData = {
+            1: [
+                { q: "၁။ Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "CHoCH", "Liquidity"], correct: 0 },
+                { q: "၂။ Downtrend တစ်ခုမှာ ဘယ်လို Structure မျိုးရှိသလဲ?", a: ["HH & HL", "LH & LL", "Equal High"], correct: 1 },
+                { q: "၃။ Trend ပြောင်းလဲမှုကို ပထမဆုံးပြသတဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 },
+                { q: "၄။ Uptrend မှာ ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher Low", "Market Gap"], correct: 1 },
+                { q: "၅။ 'Higher High' တွေ ဆက်တိုက်ဖြစ်နေတာက ဘယ်လို Market လဲ?", a: ["Bearish", "Bullish", "Sideways"], correct: 1 }
+            ],
+            2: [
+                { q: "၁။ Order Block ဆိုတာ ဘာလဲ?", a: ["အရောင်တူ Candle များ", "နောက်ဆုံးဖြစ်ပေါ်ခဲ့တဲ့ ဆန့်ကျင်ဘက် Candle", "Market Gap"], correct: 1 },
+                { q: "၂။ Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a: ["ဈေးမတက်ခင် နောက်ဆုံးကျခဲ့တဲ့ အနီရောင် Candle", "ဈေးမကျခင် နောက်ဆုံးတက်ခဲ့တဲ့ အစိမ်းရောင် Candle", "Chart ရဲ့ အလယ်"], correct: 0 },
+                { q: "၃။ Bearish Order Block ဆိုတာ ဘယ်လိုနေရာမျိုးလဲ?", a: ["Demand Zone", "Supply Zone", "Sideways"], correct: 1 },
+                { q: "၄။ Order Block တစ်ခုက ဘယ်အချိန်မှာ ပိုအားကောင်းသလဲ?", a: ["BOS ဖြစ်စေခဲ့လျှင်", "အရွယ်အစားသေးလျှင်", "အရောင်တူလျှင်"], correct: 0 },
+                { q: "၅။ Supply Zone မှာ ဘယ်လို Setup မျိုး ရှာရမလဲ?", a: ["Buy Setup", "Sell Setup", "Hold"], correct: 1 }
+            ]
+        };
 
-        let currentIdx = 0, score = 0, canClick = true;
+        let currentQuiz = [], currentIdx = 0, score = 0, canClick = true;
 
-        function loadQuiz() {
+        function startQuiz(num) {
+            currentQuiz = lessonsData[num];
+            currentIdx = 0; score = 0;
+            document.getElementById('quiz-title').innerText = "Lesson " + num + " Quiz";
+            document.getElementById('lesson-1-content').classList.add('hidden');
+            document.getElementById('lesson-2-content').classList.add('hidden');
+            document.getElementById('quiz-area').classList.remove('hidden');
+            document.getElementById('question-container').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            loadQuestion();
+        }
+
+        function loadQuestion() {
             canClick = true;
-            const item = quizData[currentIdx];
+            const item = currentQuiz[currentIdx];
             document.getElementById('question-text').innerText = item.q;
             document.getElementById('feedback-text').innerText = "";
             document.getElementById('next-btn').classList.add('hidden');
@@ -113,17 +159,13 @@
                 btn.onclick = () => {
                     if (!canClick) return;
                     canClick = false;
-                    const correctIdx = quizData[currentIdx].correct;
+                    const correctIdx = item.correct;
                     if (i === correctIdx) {
                         btn.classList.add('correct');
-                        document.getElementById('feedback-text').innerText = "မှန်ကန်ပါတယ်! ✅";
-                        document.getElementById('feedback-text').style.color = "#10b981";
                         score++;
                     } else {
                         btn.classList.add('wrong');
                         list.children[correctIdx].classList.add('correct');
-                        document.getElementById('feedback-text').innerText = "မှားယွင်းပါတယ်! ❌ အဖြေမှန်မှာ " + quizData[currentIdx].a[correctIdx] + " ဖြစ်ပါတယ်။";
-                        document.getElementById('feedback-text').style.color = "#ef4444";
                     }
                     document.getElementById('next-btn').classList.remove('hidden');
                 };
@@ -133,22 +175,18 @@
 
         function nextQuestion() {
             currentIdx++;
-            if (currentIdx < quizData.length) loadQuiz();
+            if (currentIdx < currentQuiz.length) loadQuestion();
             else {
                 document.getElementById('question-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
-                document.getElementById('final-score').innerText = "သင်၏ရမှတ်: " + score + " / " + quizData.length;
+                document.getElementById('final-score').innerText = "ရမှတ်: " + score + " / " + currentQuiz.length;
             }
         }
 
-        function restartQuiz() {
-            currentIdx = 0; score = 0;
-            document.getElementById('question-container').classList.remove('hidden');
-            document.getElementById('quiz-result').classList.add('hidden');
-            loadQuiz();
+        function backToLessons() {
+            document.getElementById('quiz-area').classList.add('hidden');
+            showLesson(document.getElementById('btn-l1').classList.contains('active') ? 1 : 2);
         }
-
-        loadQuiz();
     </script>
 
     <script type="module">
@@ -174,14 +212,10 @@
         document.getElementById('user-id-display').innerText = myUserId;
 
         if (myUserId !== "Guest") {
-            const userRef = doc(db, "users", myUserId);
-            onSnapshot(userRef, (docSnap) => {
+            onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
-                } else {
-                    document.getElementById('locked-section').classList.remove('hidden');
-                    document.getElementById('unlocked-section').classList.add('hidden');
                 }
             });
         }
