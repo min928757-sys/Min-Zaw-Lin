@@ -22,8 +22,8 @@
         button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
         .nav-container { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 20px; }
-        .nav-btn { background: #334155; color: #fff; padding: 10px; flex: 1; min-width: 80px; font-size: 13px; }
-        .nav-btn.active { background: #38bdf8; color: #0f172a; }
+        .nav-btn { background: #334155; color: #fff; padding: 10px; flex: 1; min-width: 80px; font-size: 12px; border-radius: 5px; border: none; cursor: pointer; }
+        .nav-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
         .copy-btn { width: auto; padding: 5px 12px; font-size: 12px; margin-left: 8px; display: inline-block; }
 
         /* Quiz Styling */
@@ -54,33 +54,44 @@
             <div class="status-box approved">Welcome, Trader! ✅</div>
             
             <div class="nav-container">
-                <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">Lesson 1</button>
-                <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">Lesson 2</button>
-                <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">Lesson 3</button>
+                <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">L-1</button>
+                <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">L-2</button>
+                <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">L-3</button>
+                <button class="nav-btn" id="btn-l4" onclick="showLesson(4)">L-4</button>
             </div>
 
-            <div id="lesson-1-content">
-                <h3 style="color:#38bdf8;">Lesson 1: Market Structure</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
+            <div id="lesson-content-area">
+                <div id="lesson-1" class="lesson-div">
+                    <h3 style="color:#38bdf8;">Lesson 1: Market Structure</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <button onclick="startQuiz(1)">Take Lesson 1 Quiz</button>
                 </div>
-                <button onclick="startQuiz(1)">Take Lesson 1 Quiz</button>
-            </div>
 
-            <div id="lesson-2-content" class="hidden">
-                <h3 style="color:#38bdf8;">Lesson 2: Order Blocks</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/DDLsFro2bpc" frameborder="0" allowfullscreen></iframe>
+                <div id="lesson-2" class="lesson-div hidden">
+                    <h3 style="color:#38bdf8;">Lesson 2: Order Blocks</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/DDLsFro2bpc" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <button onclick="startQuiz(2)">Take Lesson 2 Quiz</button>
                 </div>
-                <button onclick="startQuiz(2)">Take Lesson 2 Quiz</button>
-            </div>
 
-            <div id="lesson-3-content" class="hidden">
-                <h3 style="color:#38bdf8;">Lesson 3: Liquidity</h3>
-                <div class="video-container">
-                    <iframe src="https://www.youtube.com/embed/DwP9zFAC5EA" frameborder="0" allowfullscreen></iframe>
+                <div id="lesson-3" class="lesson-div hidden">
+                    <h3 style="color:#38bdf8;">Lesson 3: Liquidity</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/DwP9zFAC5EA" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <button onclick="startQuiz(3)">Take Lesson 3 Quiz</button>
                 </div>
-                <button onclick="startQuiz(3)">Take Lesson 3 Quiz</button>
+
+                <div id="lesson-4" class="lesson-div hidden">
+                    <h3 style="color:#38bdf8;">Lesson 4: Fair Value Gaps (FVG)</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/L_zlR6ZxXNg" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <button onclick="startQuiz(4)">Take Lesson 4 Quiz</button>
+                </div>
             </div>
 
             <div id="quiz-area" class="hidden" style="text-align: left; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
@@ -113,12 +124,12 @@
         }
 
         function showLesson(num) {
-            document.getElementById('lesson-1-content').classList.toggle('hidden', num !== 1);
-            document.getElementById('lesson-2-content').classList.toggle('hidden', num !== 2);
-            document.getElementById('lesson-3-content').classList.toggle('hidden', num !== 3);
-            document.getElementById('btn-l1').classList.toggle('active', num === 1);
-            document.getElementById('btn-l2').classList.toggle('active', num === 2);
-            document.getElementById('btn-l3').classList.toggle('active', num === 3);
+            document.querySelectorAll('.lesson-div').forEach(div => div.classList.add('hidden'));
+            document.getElementById('lesson-' + num).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-l' + num).classList.add('active');
+            
             document.getElementById('quiz-area').classList.add('hidden');
         }
 
@@ -143,6 +154,13 @@
                 { q: "၃။ Smart Money တွေက ဘာကြောင့် Liquidity Sweep လုပ်တာလဲ?", a: ["Trend ပြောင်းချင်လို့", "သူတို့ရဲ့ Order တွေဖြည့်ဖို့ လောင်စာယူခြင်း", "ဈေးကွက်ပိတ်ဖို့"], correct: 1 },
                 { q: "၄။ Trendline အောက်မှာ ဘာတွေရှိနေတတ်သလဲ?", a: ["Liquidity (Stop Losses)", "BOS", "Order Block"], correct: 0 },
                 { q: "၅။ 'Stop Hunt' ဆိုတာ ဘာလဲ?", a: ["အမြတ်ယူခြင်း", "Liquidity Sweep လုပ်ခြင်း", "အရောင်းရပ်ခြင်း"], correct: 1 }
+            ],
+            4: [
+                { q: "၁။ Fair Value Gap (FVG) ကို Candle ဘယ်နှခုနဲ့ ကြည့်ရသလဲ?", a: ["၂ ခု", "၃ ခု", "၅ ခု"], correct: 1 },
+                { q: "၂။ FVG ဖြစ်ပေါ်ရခြင်းရဲ့ အဓိက အကြောင်းရင်းက ဘာလဲ?", a: ["Liquidity Sweep", "ဝယ်သူနဲ့ ရောင်းသူကြား မမျှတမှု (Imbalance)", "Market Close"], correct: 1 },
+                { q: "၃။ Bullish FVG မှာ ဘယ်နေရာကို 'Gap' အဖြစ် သတ်မှတ်သလဲ?", a: ["Candle ၁ ရဲ့ High နဲ့ Candle ၃ ရဲ့ Low ကြား", "Candle ၂ ရဲ့ အရွယ်အစား", "Candle အားလုံး"], correct: 0 },
+                { q: "၄။ ဈေးနှုန်းက FVG တွေဆီကို ဘာကြောင့် ပြန်လာတတ်တာလဲ?", a: ["Trend ပြောင်းဖို့", "ကျန်ခဲ့တဲ့ ဟာကွက်တွေကို ပြန်ဖြည့် (Rebalance) ဖို့", "Support ရှာဖို့"], correct: 1 },
+                { q: "၅။ အကောင်းဆုံး Entry နေရာက ဘယ်လိုမျိုးလဲ?", a: ["FVG တစ်ခုတည်းရှိလျှင်", "FVG နဲ့ Order Block ပေါင်းစပ်နေလျှင်", "Gap ကြီးလျှင်"], correct: 1 }
             ]
         };
 
@@ -152,9 +170,7 @@
             currentQuiz = lessonsData[num];
             currentIdx = 0; score = 0;
             document.getElementById('quiz-title').innerText = "Lesson " + num + " Quiz";
-            document.getElementById('lesson-1-content').classList.add('hidden');
-            document.getElementById('lesson-2-content').classList.add('hidden');
-            document.getElementById('lesson-3-content').classList.add('hidden');
+            document.querySelectorAll('.lesson-div').forEach(div => div.classList.add('hidden'));
             document.getElementById('quiz-area').classList.remove('hidden');
             document.getElementById('question-container').classList.remove('hidden');
             document.getElementById('quiz-result').classList.add('hidden');
