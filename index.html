@@ -22,7 +22,7 @@
         button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; width: 100%; transition: 0.3s; margin-top: 10px; }
         button:hover { background: #0ea5e9; }
         .nav-container { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 20px; }
-        .nav-btn { background: #334155; color: #fff; padding: 10px; flex: 1; min-width: 80px; font-size: 12px; border-radius: 5px; border: none; cursor: pointer; }
+        .nav-btn { background: #334155; color: #fff; padding: 10px; flex: 1; min-width: 60px; font-size: 11px; border-radius: 5px; border: none; cursor: pointer; }
         .nav-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
         .copy-btn { width: auto; padding: 5px 12px; font-size: 12px; margin-left: 8px; display: inline-block; }
 
@@ -58,6 +58,7 @@
                 <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">L-2</button>
                 <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">L-3</button>
                 <button class="nav-btn" id="btn-l4" onclick="showLesson(4)">L-4</button>
+                <button class="nav-btn" id="btn-l5" onclick="showLesson(5)">L-5</button>
             </div>
 
             <div id="lesson-content-area">
@@ -91,6 +92,14 @@
                         <iframe src="https://www.youtube.com/embed/L_zlR6ZxXNg" frameborder="0" allowfullscreen></iframe>
                     </div>
                     <button onclick="startQuiz(4)">Take Lesson 4 Quiz</button>
+                </div>
+
+                <div id="lesson-5" class="lesson-div hidden">
+                    <h3 style="color:#38bdf8;">Lesson 5: Timeframe Correlation</h3>
+                    <div class="video-container">
+                        <iframe src="https://www.youtube.com/embed/GoRcLqAsYUg" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    <button onclick="startQuiz(5)">Take Lesson 5 Quiz</button>
                 </div>
             </div>
 
@@ -161,6 +170,13 @@
                 { q: "၃။ Bullish FVG မှာ ဘယ်နေရာကို 'Gap' အဖြစ် သတ်မှတ်သလဲ?", a: ["Candle ၁ ရဲ့ High နဲ့ Candle ၃ ရဲ့ Low ကြား", "Candle ၂ ရဲ့ အရွယ်အစား", "Candle အားလုံး"], correct: 0 },
                 { q: "၄။ ဈေးနှုန်းက FVG တွေဆီကို ဘာကြောင့် ပြန်လာတတ်တာလဲ?", a: ["Trend ပြောင်းဖို့", "ကျန်ခဲ့တဲ့ ဟာကွက်တွေကို ပြန်ဖြည့် (Rebalance) ဖို့", "Support ရှာဖို့"], correct: 1 },
                 { q: "၅။ အကောင်းဆုံး Entry နေရာက ဘယ်လိုမျိုးလဲ?", a: ["FVG တစ်ခုတည်းရှိလျှင်", "FVG နဲ့ Order Block ပေါင်းစပ်နေလျှင်", "Gap ကြီးလျှင်"], correct: 1 }
+            ],
+            5: [
+                { q: "၁။ Top-Down Analysis ဆိုတာ ဘာလဲ?", a: ["Lower မှ Higher သို့သွားခြင်း", "Higher Timeframe မှ Lower သို့ ဆင်းခြင်း", "Chart အကုန်ဖွင့်ထားခြင်း"], correct: 1 },
+                { q: "၂။ Higher Timeframe (Daily) ကို ဘာအတွက် အဓိကသုံးသလဲ?", a: ["Entry Point ရှာရန်", "Market Direction (Trend) ကို သိရန်", "အရောင်းရပ်ရန်"], correct: 1 },
+                { q: "၃။ Lower Timeframe ကို ဘာအတွက် အဓိကသုံးသလဲ?", a: ["Direction သိရန်", "တကျိသော Entry point (Execution) အတွက်", "Trend ရှာရန်"], correct: 1 },
+                { q: "၄။ နိုင်ခြေအမြင့်ဆုံး Setup ဖြစ်ဖို့ ဘာလုပ်ရမလဲ?", a: ["Lower TF setup က Higher TF trend နှင့် ကိုက်ညီရမည်", "ချက်ချင်း Buy မည်", "Timeframe တစ်ခုတည်းကြည့်မည်"], correct: 0 },
+                { q: "၅။ Market Structure ပိုခိုင်မာသော Timeframe မှာ ဘယ်ဟာလဲ?", a: ["1-minute", "15-minute", "Daily"], correct: 2 }
             ]
         };
 
