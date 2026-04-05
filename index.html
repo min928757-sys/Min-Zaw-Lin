@@ -24,6 +24,11 @@
         /* Video & Quiz */
         .video-container { margin-top: 15px; border: 2px solid var(--primary); border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        
+        /* Broker Link Box (New Position) */
+        .broker-box { margin-top: 20px; padding: 15px; border: 1px dashed var(--primary); border-radius: 10px; background: rgba(56, 189, 248, 0.05); }
+        .broker-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 15px; }
+
         .quiz-option { background: #334155; color: white; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
@@ -32,16 +37,7 @@
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0f172a; border-radius: 10px; overflow: hidden; }
         .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; }
         .leaderboard-table th { background: #334155; color: var(--primary); font-size: 13px; }
-        .my-rank-row { background: rgba(56, 189, 248, 0.4) !important; font-weight: bold; border: 1px solid var(--primary); }
-
-        /* Certificate */
-        #certificate-area { background: white; color: #0f172a; padding: 30px; border: 10px double var(--primary); border-radius: 10px; margin-top: 20px; }
-        .cert-title { font-family: 'Georgia', serif; font-size: 22px; font-weight: bold; }
-        .cert-name { font-size: 18px; border-bottom: 2px solid #0f172a; display: inline-block; padding: 0 15px; margin: 10px 0; color: #0369a1; }
-        
-        /* Footer (Moved Up) */
-        footer { margin-top: 15px; padding: 15px; border-top: 1px solid #334155; font-size: 14px; color: #94a3b8; }
-        .footer-link { color: var(--primary); text-decoration: none; font-weight: bold; }
+        .my-rank-row { background: rgba(56, 189, 248, 0.3) !important; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -59,7 +55,7 @@
         </div>
 
         <div id="unlocked-section" class="hidden">
-            <div class="nav-container" id="main-nav">
+            <div class="nav-container">
                 <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">L-1</button>
                 <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">L-2</button>
                 <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">L-3</button>
@@ -70,11 +66,15 @@
                 <button class="nav-btn" id="btn-rank" onclick="showLeaderboard()" style="background: #facc15; color: #000;">Ranking</button>
             </div>
 
-            <div id="lesson-content-area">
-                <div id="lesson-current">
+            <div id="lesson-view">
+                <div id="lesson-content-area">
                     <h3 id="lesson-title" style="color:var(--primary);">Lesson 1: Market Structure</h3>
                     <div class="video-container"><iframe id="video-frame" src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe></div>
                     <button onclick="startQuiz()">Take Quiz</button>
+                </div>
+
+                <div class="broker-box">
+                    Open Live Account - <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="broker-link">VT Markets</a>
                 </div>
             </div>
 
@@ -95,29 +95,24 @@
             <div id="leaderboard-area" class="hidden">
                 <h3 style="color:#facc15;">🏆 Top Traders</h3>
                 <table class="leaderboard-table">
-                    <thead><tr><th>Rank</th><th>Trader ID</th><th>Score</th></tr></thead>
+                    <thead><tr><th>Rank</th><th>User ID</th><th>Score</th></tr></thead>
                     <tbody id="leaderboard-body"></tbody>
                 </table>
-                <button onclick="showLesson(currentLesson)" style="background: #334155; color: #fff; margin-top: 15px;">Back</button>
+                <button onclick="backToLessons()" style="margin-top: 20px;">Back to Lessons</button>
             </div>
 
             <div id="certificate-wrap" class="hidden">
-                <div id="certificate-area">
-                    <div class="cert-title">CERTIFICATE OF COMPLETION</div>
-                    <p>Trader ID:</p>
-                    <div class="cert-name" id="cert-user-id"></div>
+                <div id="certificate-area" style="background: white; color: #0f172a; padding: 20px; border: 8px double var(--primary);">
+                    <div style="font-size: 20px; font-weight: bold;">CERTIFICATE OF COMPLETION</div>
+                    <p>Trader ID: <b id="cert-user-id"></b></p>
                     <p>Course: <b>ICT/SMC FOUNDATION</b></p>
                     <div id="cert-total-score" style="font-weight: bold; color: #10b981; font-size: 18px;"></div>
-                    <div style="margin-top: 15px; color: var(--primary); font-weight: bold;">FX KARAM ACADEMY</div>
+                    <div style="margin-top: 10px; color: var(--primary); font-weight: bold;">FX KARAM ACADEMY</div>
                 </div>
-                <button onclick="showLeaderboard()" style="margin-top:15px;">Check Ranking 📊</button>
+                <button onclick="showLeaderboard()" style="margin-top: 15px;">Check Ranking 📊</button>
             </div>
         </div>
     </div>
-
-    <footer id="footer-section" class="hidden">
-        Open Live Account - <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="footer-link">VT Markets</a>
-    </footer>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
@@ -162,7 +157,8 @@
             document.getElementById('video-frame').src = "https://www.youtube.com/embed/" + videos[num];
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById('btn-l' + num).classList.add('active');
-            document.getElementById('lesson-current').classList.remove('hidden');
+            
+            document.getElementById('lesson-view').classList.remove('hidden');
             document.getElementById('quiz-area').classList.add('hidden');
             document.getElementById('leaderboard-area').classList.add('hidden');
             document.getElementById('certificate-wrap').classList.add('hidden');
@@ -170,7 +166,7 @@
 
         window.startQuiz = () => {
             qIdx = 0; qScore = 0;
-            document.getElementById('lesson-current').classList.add('hidden');
+            document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-area').classList.remove('hidden');
             document.getElementById('quiz-result').classList.add('hidden');
             document.getElementById('question-container').classList.remove('hidden');
@@ -202,7 +198,7 @@
                 userScores[currentLesson] = qScore;
                 document.getElementById('question-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
-                document.getElementById('current-score-text').innerText = "ရမှတ်: " + qScore + " / 5";
+                document.getElementById('current-score-text').innerText = "Score: " + qScore + " / 5";
                 if (currentLesson === 7) {
                     document.getElementById('final-cert-btn').classList.remove('hidden');
                     saveFinalScore();
@@ -218,8 +214,9 @@
         }
 
         window.showLeaderboard = async () => {
-            document.getElementById('unlocked-section').querySelectorAll('> div').forEach(d => d.classList.add('hidden'));
-            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('quiz-area').classList.add('hidden');
+            document.getElementById('certificate-wrap').classList.add('hidden');
             document.getElementById('leaderboard-area').classList.remove('hidden');
             
             const q = query(collection(db, "users"), orderBy("total_score", "desc"), limit(10));
@@ -232,8 +229,7 @@
                 if(data.total_score !== undefined) {
                     const row = document.createElement('tr');
                     if(docSnap.id === myUserId) row.className = "my-rank-row";
-                    let icon = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank;
-                    row.innerHTML = `<td>${icon}</td><td>${docSnap.id}</td><td>${data.total_score}</td>`;
+                    row.innerHTML = `<td>${rank}</td><td>${docSnap.id}</td><td>${data.total_score}</td>`;
                     tbody.appendChild(row);
                     rank++;
                 }
@@ -250,13 +246,12 @@
 
         window.backToLessons = () => showLesson(currentLesson);
 
-        // Approval Flow
+        // Firebase Logic (Approval Check)
         if (myUserId !== "Guest") {
             onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
-                    document.getElementById('footer-section').classList.remove('hidden');
                     showLesson(1);
                 }
             });
