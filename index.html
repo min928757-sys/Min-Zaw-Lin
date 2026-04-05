@@ -12,7 +12,6 @@
         h1 { color: var(--primary); margin-bottom: 5px; font-size: 22px; }
         .status-box { margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; }
         .pending { background-color: #f59e0b; color: #ffffff; }
-        .approved { background-color: #10b981; color: #ffffff; }
         .hidden { display: none !important; }
         
         button { background: var(--primary); color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; width: 100%; }
@@ -25,6 +24,11 @@
         
         .broker-box { margin-top: 20px; padding: 15px; border: 1px dashed var(--primary); border-radius: 10px; background: rgba(56, 189, 248, 0.05); }
         .broker-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 15px; }
+
+        .cert-lock-btn { background: #1e293b; color: #64748b; border: 1px solid #334155; margin-top: 15px; border-radius: 8px; padding: 10px; font-size: 13px; cursor: not-allowed; }
+        .cert-ready-btn { background: #facc15 !important; color: #000 !important; cursor: pointer !important; animation: pulse 1.5s infinite; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
         .quiz-option { background: #334155; color: white; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
@@ -68,8 +72,15 @@
                     <div class="video-container"><iframe id="video-frame" src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe></div>
                     <button onclick="startQuiz()">Take Quiz</button>
                 </div>
+
                 <div class="broker-box">
                     Open Live Account - <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="broker-link">VT Markets</a>
+                </div>
+
+                <div id="cert-status-area">
+                    <button id="main-cert-btn" class="cert-lock-btn" onclick="checkCertAccess()">
+                        🎓 Claim Your Certificate (Finish L-7)
+                    </button>
                 </div>
             </div>
 
@@ -82,7 +93,6 @@
                 </div>
                 <div id="quiz-result" class="hidden">
                     <h2 id="current-score-text"></h2>
-                    <button id="final-cert-btn" class="hidden" onclick="generateCertificate()" style="background: #facc15; color: #0f172a;">Get Certificate 🏆</button>
                     <button onclick="backToLessons()" style="background: #64748b;">Back to Lessons</button>
                 </div>
             </div>
@@ -97,14 +107,17 @@
             </div>
 
             <div id="certificate-wrap" class="hidden">
-                <div id="certificate-area" style="background: white; color: #0f172a; padding: 20px; border: 8px double var(--primary);">
-                    <div style="font-size: 20px; font-weight: bold;">CERTIFICATE OF COMPLETION</div>
-                    <p>Trader ID: <b id="cert-user-id"></b></p>
-                    <p>Course: <b>ICT/SMC FOUNDATION</b></p>
-                    <div id="cert-total-score" style="font-weight: bold; color: #10b981; font-size: 18px;"></div>
-                    <div style="margin-top: 10px; color: var(--primary); font-weight: bold;">FX KARAM ACADEMY</div>
+                <div id="certificate-area" style="background: white; color: #0f172a; padding: 30px; border: 8px double var(--primary); border-radius: 10px;">
+                    <div style="font-size: 22px; font-weight: bold; font-family: 'Georgia', serif;">CERTIFICATE</div>
+                    <div style="font-size: 14px; margin-bottom: 10px;">OF COMPLETION</div>
+                    <p style="font-size: 14px;">This is to certify that</p>
+                    <div style="font-size: 18px; border-bottom: 2px solid #0f172a; display: inline-block; padding: 0 20px; font-weight: bold; color: #0369a1;" id="cert-user-id"></div>
+                    <p style="font-size: 14px; margin-top: 10px;">has successfully completed the</p>
+                    <p><b>ICT/SMC FOUNDATION COURSE</b></p>
+                    <div id="cert-total-score" style="font-weight: bold; color: #10b981; font-size: 18px; margin: 10px 0;"></div>
+                    <div style="margin-top: 20px; color: var(--primary); font-weight: bold; font-size: 16px;">FX KARAM ACADEMY</div>
                 </div>
-                <button onclick="showLeaderboard()" style="margin-top: 15px;">Check Ranking 📊</button>
+                <button onclick="backToLessons()" style="margin-top: 15px;">Back to Lessons</button>
             </div>
         </div>
     </div>
@@ -129,10 +142,10 @@
         const db = getFirestore(app);
 
         let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "Guest";
-        // Header တွင် အပြည့်ပြခြင်း
         document.getElementById('user-id-display').innerText = myUserId;
 
         let userScores = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
+        let finishedLessons = [];
         let currentLesson = 1, qIdx = 0, qScore = 0;
         const videos = { 1:"jyad4g6F8FU", 2:"DDLsFro2bpc", 3:"DwP9zFAC5EA", 4:"L_zlR6ZxXNg", 5:"GoRcLqAsYUg", 6:"n7owfWxBxmw", 7:"nYuowB5Wyts" };
         const titles = { 1:"Market Structure", 2:"Order Blocks", 3:"Liquidity", 4:"Fair Value Gaps", 5:"Timeframe Correlation", 6:"Risk Management", 7:"Trading Psychology" };
@@ -158,6 +171,7 @@
             document.getElementById('quiz-area').classList.add('hidden');
             document.getElementById('leaderboard-area').classList.add('hidden');
             document.getElementById('certificate-wrap').classList.add('hidden');
+            updateCertButton();
         };
 
         window.startQuiz = () => {
@@ -192,24 +206,45 @@
             if (qIdx < 5) loadQ();
             else {
                 userScores[currentLesson] = qScore;
+                if (!finishedLessons.includes(currentLesson)) finishedLessons.push(currentLesson);
                 document.getElementById('question-container').classList.add('hidden');
                 document.getElementById('quiz-result').classList.remove('hidden');
                 document.getElementById('current-score-text').innerText = "Score: " + qScore + " / 5";
-                if (currentLesson === 7) {
-                    document.getElementById('final-cert-btn').classList.remove('hidden');
-                    saveFinalScore();
-                }
+                saveScoreToFirebase();
             }
         };
 
-        async function saveFinalScore() {
+        async function saveScoreToFirebase() {
             let total = 0; for(let k in userScores) total += userScores[k];
             if (myUserId !== "Guest") {
-                await setDoc(doc(db, "users", myUserId), { total_score: total, last_updated: new Date() }, { merge: true });
+                await setDoc(doc(db, "users", myUserId), { 
+                    total_score: total, 
+                    finished_lessons: finishedLessons,
+                    last_updated: new Date() 
+                }, { merge: true });
+            }
+            updateCertButton();
+        }
+
+        function updateCertButton() {
+            const btn = document.getElementById('main-cert-btn');
+            if (finishedLessons.includes(7)) {
+                btn.innerText = "🎓 Claim Your Certificate (Ready!)";
+                btn.className = "cert-ready-btn";
+            } else {
+                btn.innerText = "🎓 Claim Your Certificate (Finish L-7)";
+                btn.className = "cert-lock-btn";
             }
         }
 
-        // Ranking တွင် နောက်ဆုံး ၃ လုံးကို ဖျောက်ခြင်း
+        window.checkCertAccess = () => {
+            if (finishedLessons.includes(7)) {
+                generateCertificate();
+            } else {
+                alert("ကျေးဇူးပြု၍ Lesson 7 အထိ ပြီးအောင်အရင်ဖြေပေးပါခင်ဗျာ။");
+            }
+        };
+
         function maskUserId(id) {
             if (id.length <= 3) return "***";
             return id.slice(0, -3) + "***";
@@ -231,7 +266,6 @@
                 if(data.total_score !== undefined) {
                     const row = document.createElement('tr');
                     if(docSnap.id === myUserId) row.className = "my-rank-row";
-                    // Ranking ထဲတွင်သာ mask လုပ်ထားသော ID ကိုပြပါမည်
                     const displayedId = maskUserId(docSnap.id);
                     row.innerHTML = `<td>${rank}</td><td>${displayedId}</td><td>${data.total_score}</td>`;
                     tbody.appendChild(row);
@@ -242,6 +276,7 @@
 
         window.generateCertificate = () => {
             let total = 0; for(let k in userScores) total += userScores[k];
+            document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-area').classList.add('hidden');
             document.getElementById('certificate-wrap').classList.remove('hidden');
             document.getElementById('cert-user-id').innerText = myUserId;
@@ -253,6 +288,8 @@
         if (myUserId !== "Guest") {
             onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
+                    const data = docSnap.data();
+                    if(data.finished_lessons) finishedLessons = data.finished_lessons;
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
                     showLesson(1);
