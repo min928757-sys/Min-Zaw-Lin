@@ -6,229 +6,176 @@
     <title>Fx Karam Trading Academy</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <style>
         :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #facc15; }
-        
-        body { 
-            font-family: 'Segoe UI', Roboto, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            text-align: center; 
-            padding: 15px; 
-            margin: 0; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .container { 
-            max-width: 480px; 
-            margin: auto; 
-            background: var(--card); 
-            padding: 20px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        h2 { color: var(--primary); margin-top: 0; font-size: 24px; }
-        .user-info { font-size: 14px; background: rgba(56, 189, 248, 0.1); padding: 8px; border-radius: 10px; margin-bottom: 20px; }
-
-        /* Smooth Navigation Buttons */
-        .nav-container { 
-            display: grid; 
-            grid-template-columns: repeat(4, 1fr); 
-            gap: 8px; 
-            margin-bottom: 20px; 
-        }
-
-        .nav-btn { 
-            background: #334155; 
-            color: #fff; 
-            padding: 10px 5px; 
-            font-size: 12px; 
-            border-radius: 12px; 
-            border: none; 
-            cursor: pointer; 
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            font-weight: bold;
-        }
-
-        .nav-btn:active { transform: scale(0.9); }
-        .nav-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 15px rgba(56, 189, 248, 0.4); }
-        .nav-btn.cert-btn { background: var(--accent); color: #000; grid-column: span 1; }
-
-        /* Smooth Lesson & Video Area */
-        .video-container { 
-            position: relative; 
-            padding-bottom: 56.25%; 
-            height: 0; 
-            border-radius: 15px; 
-            overflow: hidden; 
-            margin: 15px 0;
-            border: 2px solid #334155;
-            background: #000;
-        }
-
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 15px; margin: 0; }
+        .container { max-width: 480px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
+        .nav-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
+        .nav-btn { background: #334155; color: #fff; padding: 10px 5px; font-size: 11px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .nav-btn.active { background: var(--primary); color: #000; }
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; margin: 15px 0; border: 2px solid #334155; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-
-        /* Main Action Buttons */
-        .action-btn { 
-            background: var(--primary); 
-            color: #0f172a; 
-            border: none; 
-            padding: 15px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-weight: bold; 
-            width: 100%; 
-            margin-top: 10px;
-            font-size: 16px;
-            transition: all 0.2s;
-        }
-
-        .action-btn:active { background: #0ea5e9; transform: translateY(2px); }
-
-        /* Certificate Styling */
-        #certificate-area { 
-            background: white; 
-            color: #0f172a; 
-            padding: 30px 15px; 
-            border: 12px double #0369a1; 
-            border-radius: 8px; 
-            margin: 20px auto;
-            width: 88%;
-        }
-
-        .cert-name { 
-            font-size: 22px; 
-            font-weight: 900; 
-            color: #0369a1; 
-            border-bottom: 2px solid #0f172a; 
-            display: inline-block; 
-            margin: 15px 0;
-            min-width: 150px;
-        }
-
+        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; }
         .hidden { display: none !important; }
+        
+        /* Quiz Styles */
+        .option-btn { background: #334155; color: white; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 8px; border: 1px solid #475569; text-align: left; cursor: pointer; }
+        .correct { background: #10b981 !important; }
+        .wrong { background: #ef4444 !important; }
+
+        /* Leaderboard Style */
+        .rank-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
+        .rank-table th, .rank-table td { padding: 10px; border-bottom: 1px solid #334155; }
+        .my-rank { background: rgba(56, 189, 248, 0.2); }
+
+        /* Certificate */
+        #cert-area { background: white; color: #0f172a; padding: 30px 15px; border: 12px double #0369a1; border-radius: 8px; margin: 20px auto; width: 85%; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>Fx Karam Academy</h2>
-        <div class="user-info">User ID: <span id="user-id-display" style="color: var(--primary); font-weight: bold;">Loading...</span></div>
+        <h2 style="color: var(--primary); margin:0;">Fx Karam Academy</h2>
+        <p style="font-size:12px;">User ID: <span id="user-id-display">...</span></p>
 
-        <div id="main-content">
-            <div class="nav-container">
-                <button class="nav-btn active" id="n1" onclick="showLesson(1)">L-1</button>
-                <button class="nav-btn" id="n2" onclick="showLesson(2)">L-2</button>
-                <button class="nav-btn" id="n3" onclick="showLesson(3)">L-3</button>
-                <button class="nav-btn" id="n4" onclick="showLesson(4)">L-4</button>
-                <button class="nav-btn" id="n5" onclick="showLesson(5)">L-5</button>
-                <button class="nav-btn" id="n6" onclick="showLesson(6)">L-6</button>
-                <button class="nav-btn" id="n7" onclick="showLesson(7)">L-7</button>
-                <button class="nav-btn cert-btn" onclick="openCertSection()">Cert</button>
-            </div>
+        <div class="nav-container">
+            <button class="nav-btn active" id="n1" onclick="showLesson(1)">L-1</button>
+            <button class="nav-btn" id="n2" onclick="showLesson(2)">L-2</button>
+            <button class="nav-btn" id="n3" onclick="showLesson(3)">L-3</button>
+            <button class="nav-btn" id="n4" onclick="showLesson(4)">L-4</button>
+            <button class="nav-btn" id="n5" onclick="showLesson(5)">L-5</button>
+            <button class="nav-btn" id="n6" onclick="showLesson(6)">L-6</button>
+            <button class="nav-btn" id="n7" onclick="showLesson(7)">L-7</button>
+            <button class="nav-btn" style="background:var(--accent); color:#000;" onclick="showRank()">Rank</button>
+        </div>
 
-            <div id="lesson-view">
-                <h3 id="lesson-title" style="margin-bottom: 5px;">Lesson 1: Market Structure</h3>
-                <div class="video-container">
-                    <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
-                </div>
-                <button class="action-btn" onclick="tg.MainButton.setText('QUIZ STARTING...').show()">Take Quiz</button>
-            </div>
+        <div id="lesson-view">
+            <h3 id="l-title">Lesson 1</h3>
+            <div class="video-container"><iframe id="v-frame" src="" frameborder="0" allowfullscreen></iframe></div>
+            <button class="action-btn" onclick="startQuiz()">Take Quiz</button>
+            <button class="action-btn" style="background:#facc15; margin-top:15px;" onclick="openCert()">🎓 Claim Certificate</button>
+        </div>
 
-            <div id="cert-view" class="hidden">
-                <div id="certificate-area">
-                    <h2 style="margin:0; color:#0f172a;">CERTIFICATE</h2>
-                    <p style="font-size:10px; letter-spacing: 2px; color:#64748b; margin-bottom: 15px;">OF COMPLETION</p>
-                    <p style="font-size:13px; margin:0;">This is to certify that</p>
-                    <div class="cert-name" id="cert-user-id">---</div>
-                    <p style="font-size:13px; margin:0;">has successfully completed the</p>
-                    <p style="font-weight: bold; margin: 10px 0;">ICT/SMC FOUNDATION COURSE</p>
-                    <h3 id="cert-total-score" style="color: #10b981; margin: 10px 0;">Score: 0 / 35</h3>
-                    <div style="margin-top: 15px; color: #0369a1; font-weight: bold; font-size: 14px;">FX KARAM ACADEMY</div>
-                </div>
-                <button class="action-btn" id="save-btn" onclick="processDownload()" style="background: #10b981; color: white;">⬇️ Save Certificate</button>
-                <button class="action-btn" onclick="showLesson(1)" style="background: #475569; color: white;">Back to Lessons</button>
+        <div id="quiz-view" class="hidden">
+            <h4 id="q-text">Question here?</h4>
+            <div id="options-box"></div>
+        </div>
+
+        <div id="rank-view" class="hidden">
+            <h3 style="color:var(--accent);">🏆 Top 10 Traders</h3>
+            <table class="rank-table">
+                <thead><tr><th>Rank</th><th>User</th><th>Score</th></tr></thead>
+                <tbody id="rank-body"></tbody>
+            </table>
+            <button class="action-btn" onclick="showLesson(1)">Back</button>
+        </div>
+
+        <div id="cert-view" class="hidden">
+            <div id="cert-area">
+                <h2 style="margin:0;">CERTIFICATE</h2>
+                <p style="font-size:10px;">OF COMPLETION</p>
+                <div style="font-size:22px; font-weight:bold; color:#0369a1; border-bottom:2px solid #000; margin:15px 0;" id="c-user">---</div>
+                <p>ICT/SMC FOUNDATION COURSE</p>
+                <h3 id="c-score" style="color:#10b981;">Score: 0/35</h3>
+                <p style="font-weight:bold; color:#0369a1;">FX KARAM ACADEMY</p>
             </div>
+            <button class="action-btn" onclick="downloadAsPDF()" style="background:#10b981; color:white;">⬇️ Download PDF Certificate</button>
+            <button class="action-btn" onclick="showLesson(1)" style="background:#475569; color:white;">Back</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc, collection, query, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = { apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok", authDomain: "trading-app-69b9d.firebaseapp.com", projectId: "trading-app-69b9d", storageBucket: "trading-app-69b9d.appspot.com", messagingSenderId: "573273662231", appId: "1:573273662231:web:fbbbc6876711e612190829" };
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
         const tg = window.Telegram.WebApp;
-        tg.ready();
 
         let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "2020089609";
         document.getElementById('user-id-display').innerText = myUserId;
 
         const vids = ["jyad4g6F8FU", "DDLsFro2bpc", "DwP9zFAC5EA", "L_zlR6ZxXNg", "GoRcLqAsYUg", "n7owfWxBxmw", "nYuowB5Wyts"];
-        const titles = ["Market Structure", "Order Blocks", "Liquidity", "Fair Value Gaps", "Timeframe Correlation", "Risk Management", "Trading Psychology"];
+        let currentL = 1;
 
         window.showLesson = (n) => {
+            currentL = n;
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('n' + n).classList.add('active');
-            document.getElementById('lesson-title').innerText = `Lesson ${n}: ${titles[n-1]}`;
-            document.getElementById('video-frame').src = `https://www.youtube.com/embed/${vids[n-1]}`;
+            if(document.getElementById('n'+n)) document.getElementById('n'+n).classList.add('active');
+            document.getElementById('v-frame').src = "https://www.youtube.com/embed/" + vids[n-1];
             document.getElementById('lesson-view').classList.remove('hidden');
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('rank-view').classList.add('hidden');
             document.getElementById('cert-view').classList.add('hidden');
         };
 
-        window.openCertSection = async () => {
-            const btn = document.querySelector('.cert-btn');
-            btn.innerText = "Loading...";
-            
-            try {
-                const userDoc = await getDoc(doc(db, "users", myUserId));
-                let score = 0;
-                if (userDoc.exists()) {
-                    score = userDoc.data().total_score || 0;
-                }
-                document.getElementById('cert-total-score').innerText = `Total Score: ${score} / 35`;
-                document.getElementById('cert-user-id').innerText = myUserId;
-                
-                document.getElementById('lesson-view').classList.add('hidden');
-                document.getElementById('cert-view').classList.remove('hidden');
-            } catch (e) {
-                alert("Data ခေါ်ယူရတာ အခက်အခဲရှိနေပါတယ်ဗျာ။");
-            } finally {
-                btn.innerText = "Cert";
-            }
+        // Quiz Logic
+        window.startQuiz = () => {
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.remove('hidden');
+            loadQuestion();
         };
 
-        // Method 1: New Window approach with High-Res Canvas
-        window.processDownload = () => {
-            const saveBtn = document.getElementById('save-btn');
-            saveBtn.innerText = "Generating Image...";
-            const certArea = document.getElementById('certificate-area');
+        function loadQuestion() {
+            document.getElementById('q-text').innerText = "Lesson " + currentL + " အတွက် မေးခွန်းဖြေဆိုရန် အဆင်သင့်ဖြစ်ပြီလား?";
+            const box = document.getElementById('options-box');
+            box.innerHTML = `<button class="option-btn" onclick="finishQuiz(5)">ဟုတ်ကဲ့၊ စတင်မည် (၅ မှတ်ရယူမည်)</button>`;
+        }
 
-            html2canvas(certArea, { 
-                scale: 3, 
-                backgroundColor: "#0f172a",
-                logging: false,
-                useCORS: true
-            }).then(canvas => {
-                const dataUrl = canvas.toDataURL("image/png");
-                
-                // Telegram Mini App ထဲမှာ Download Direct မရရင် ပုံကို Full Screen ပြပေးလိုက်ခြင်း
-                const imgWindow = window.open("");
-                imgWindow.document.write(`
-                    <body style="margin:0; background:#0f172a; color:white; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100vh;">
-                        <p style="margin-bottom:15px;">ပုံပေါ်ကို ဖိထားပြီး <b>"Save to Photos"</b> ကို နှိပ်ပါ</p>
-                        <img src="${dataUrl}" style="width:90%; border-radius:10px; box-shadow:0 0 20px rgba(0,0,0,0.5);">
-                        <button onclick="window.close()" style="margin-top:25px; padding:12px 25px; background:#38bdf8; border:none; border-radius:8px; font-weight:bold;">Back to Academy</button>
-                    </body>
-                `);
-                
-                saveBtn.innerText = "⬇️ Save Certificate";
+        window.finishQuiz = async (pts) => {
+            const userRef = doc(db, "users", myUserId);
+            const userSnap = await getDoc(userRef);
+            let total = pts;
+            if(userSnap.exists()) total = (userSnap.data().total_score || 0) + pts;
+            await setDoc(userRef, { total_score: total }, { merge: true });
+            alert("ဂုဏ်ယူပါတယ်! ၅ မှတ် ရရှိသွားပါပြီ။");
+            showLesson(currentL);
+        };
+
+        // Ranking Logic
+        window.showRank = async () => {
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('rank-view').classList.remove('hidden');
+            const q = query(collection(db, "users"), orderBy("total_score", "desc"), limit(10));
+            const snap = await getDocs(q);
+            const tbody = document.getElementById('rank-body');
+            tbody.innerHTML = "";
+            let i = 1;
+            snap.forEach(d => {
+                const row = `<tr class="${d.id === myUserId ? 'my-rank' : ''}"><td>${i}</td><td>${d.id.slice(0,4)}***</td><td>${d.data().total_score || 0}</td></tr>`;
+                tbody.innerHTML += row;
+                i++;
             });
         };
 
-        // Initial Load
+        // Cert Logic
+        window.openCert = async () => {
+            const userSnap = await getDoc(doc(db, "users", myUserId));
+            const score = userSnap.exists() ? userSnap.data().total_score || 0 : 0;
+            document.getElementById('c-score').innerText = "Score: " + score + " / 35";
+            document.getElementById('c-user').innerText = myUserId;
+            document.getElementById('lesson-view').classList.add('hidden');
+            document.getElementById('cert-view').classList.remove('hidden');
+        };
+
+        // PDF Download Logic (အသေချာဆုံးနည်းလမ်း)
+        window.downloadAsPDF = () => {
+            const { jsPDF } = window.jspdf;
+            const cert = document.getElementById('cert-area');
+            
+            html2canvas(cert, { scale: 2 }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const width = pdf.internal.pageSize.getWidth();
+                const height = (canvas.height * width) / canvas.width;
+                pdf.addImage(imgData, 'PNG', 0, 10, width, height);
+                pdf.save(`FxKaram_Certificate_${myUserId}.pdf`);
+                alert("PDF Certificate ကို Download ပြုလုပ်နေပါပြီ။");
+            });
+        };
+
         showLesson(1);
     </script>
 </body>
