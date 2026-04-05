@@ -6,259 +6,106 @@
     <title>Fx Karam Trading Academy</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .container { max-width: 550px; margin: auto; background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); flex-grow: 1; }
-        h1 { color: var(--primary); margin-bottom: 5px; font-size: 22px; }
-        .status-box { margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; }
-        .pending { background-color: #f59e0b; color: #ffffff; }
-        .approved { background-color: #10b981; color: #ffffff; }
-        .hidden { display: none !important; }
+        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #facc15; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; }
+        .container { max-width: 500px; margin: auto; background: var(--card); padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
         
-        button { background: var(--primary); color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; width: 100%; }
-        .nav-container { display: flex; justify-content: center; gap: 3px; flex-wrap: wrap; margin-bottom: 20px; }
-        .nav-btn { background: #334155; color: #fff; padding: 8px; flex: 1; min-width: 45px; font-size: 10px; border-radius: 5px; border: none; cursor: pointer; }
-        .nav-btn.active { background: var(--primary); color: #0f172a; font-weight: bold; }
+        /* Navigation */
+        .nav-container { display: flex; justify-content: center; gap: 5px; flex-wrap: wrap; margin-bottom: 20px; }
+        .nav-btn { background: #334155; color: #fff; padding: 10px; flex: 1; min-width: 45px; font-size: 12px; border-radius: 8px; border: none; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .nav-btn.active { background: var(--primary); color: #000; }
         
-        .video-container { margin-top: 15px; border: 2px solid var(--primary); border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
+        /* Video Area */
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 10px; overflow: hidden; margin: 15px 0; border: 1px solid #334155; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        .broker-box { margin-top: 20px; padding: 15px; border: 1px dashed var(--primary); border-radius: 10px; background: rgba(56, 189, 248, 0.05); }
-        .broker-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 15px; }
+        /* Main Buttons */
+        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 15px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; }
+        .action-btn:active { opacity: 0.8; transform: scale(0.98); }
+        .screenshot-btn { background: var(--accent); color: #000; margin-top: 15px; }
 
-        .quiz-option { background: #334155; color: white; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
-        .correct { background: #10b981 !important; }
-        .wrong { background: #ef4444 !important; }
-
-        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0f172a; border-radius: 10px; overflow: hidden; }
-        .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; }
-        .leaderboard-table th { background: #334155; color: var(--primary); font-size: 13px; }
-        .my-rank-row { background: rgba(56, 189, 248, 0.3) !important; font-weight: bold; }
+        .user-id { font-size: 14px; margin-bottom: 15px; color: var(--primary); opacity: 0.9; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Fx Karam Academy</h1>
-        <p style="font-size: 14px;">User ID: <span id="user-id-display" style="font-weight: bold; color: var(--primary);">Connecting...</span></p>
+        <h2 style="color: var(--primary); margin-bottom: 5px;">Fx Karam Academy</h2>
+        <div class="user-id">Student ID: <span id="user-id-display">Loading...</span></div>
 
-        <hr style="border: 0.5px solid #334155; margin: 15px 0;">
-
-        <div id="locked-section">
-            <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
-            <p>KPay: <b>09456507877</b></p>
-            <button onclick="tg.openTelegramLink('https://t.me/+cbvtPsUU2gExYmY1')">Screenshot ပို့ရန်</button>
+        <div class="nav-container">
+            <button class="nav-btn active" id="n1" onclick="showLesson(1)">L-1</button>
+            <button class="nav-btn" id="n2" onclick="showLesson(2)">L-2</button>
+            <button class="nav-btn" id="n3" onclick="showLesson(3)">L-3</button>
+            <button class="nav-btn" id="n4" onclick="showLesson(4)">L-4</button>
+            <button class="nav-btn" id="n5" onclick="showLesson(5)">L-5</button>
+            <button class="nav-btn" id="n6" onclick="showLesson(6)">L-6</button>
+            <button class="nav-btn" id="n7" onclick="showLesson(7)">L-7</button>
         </div>
 
-        <div id="unlocked-section" class="hidden">
-            <div class="nav-container">
-                <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">L-1</button>
-                <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">L-2</button>
-                <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">L-3</button>
-                <button class="nav-btn" id="btn-l4" onclick="showLesson(4)">L-4</button>
-                <button class="nav-btn" id="btn-l5" onclick="showLesson(5)">L-5</button>
-                <button class="nav-btn" id="btn-l6" onclick="showLesson(6)">L-6</button>
-                <button class="nav-btn" id="btn-l7" onclick="showLesson(7)">L-7</button>
-                <button class="nav-btn" id="btn-rank" onclick="showLeaderboard()" style="background: #facc15; color: #000;">Ranking</button>
+        <div id="lesson-content">
+            <h3 id="lesson-title" style="margin: 10px 0;">Lesson 1: Market Structure</h3>
+            <div class="video-container">
+                <iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe>
             </div>
-
-            <div id="lesson-view">
-                <div id="lesson-content-area">
-                    <h3 id="lesson-title" style="color:var(--primary);">Lesson 1: Market Structure</h3>
-                    <div class="video-container"><iframe id="video-frame" src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz()">Take Quiz</button>
-                </div>
-                <div class="broker-box">
-                    Open Live Account - <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="broker-link">VT Markets</a>
-                </div>
-            </div>
-
-            <div id="quiz-area" class="hidden">
-                <h4 id="quiz-header" style="color: var(--primary);"></h4>
-                <div id="question-container">
-                    <p id="question-text" style="font-weight: bold; margin-bottom: 15px;"></p>
-                    <div id="options-list"></div>
-                    <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
-                </div>
-                <div id="quiz-result" class="hidden">
-                    <h2 id="current-score-text"></h2>
-                    <button id="final-cert-btn" class="hidden" onclick="generateCertificate()" style="background: #facc15; color: #0f172a;">Get Certificate 🏆</button>
-                    <button onclick="backToLessons()" style="background: #64748b;">Back to Lessons</button>
-                </div>
-            </div>
-
-            <div id="leaderboard-area" class="hidden">
-                <h3 style="color:#facc15;">🏆 Top Traders</h3>
-                <table class="leaderboard-table">
-                    <thead><tr><th>Rank</th><th>User ID</th><th>Score</th></tr></thead>
-                    <tbody id="leaderboard-body"></tbody>
-                </table>
-                <button onclick="backToLessons()" style="margin-top: 20px;">Back to Lessons</button>
-            </div>
-
-            <div id="certificate-wrap" class="hidden">
-                <div id="certificate-area" style="background: white; color: #0f172a; padding: 20px; border: 8px double var(--primary);">
-                    <div style="font-size: 20px; font-weight: bold;">CERTIFICATE OF COMPLETION</div>
-                    <p>Trader ID: <b id="cert-user-id"></b></p>
-                    <p>Course: <b>ICT/SMC FOUNDATION</b></p>
-                    <div id="cert-total-score" style="font-weight: bold; color: #10b981; font-size: 18px;"></div>
-                    <div style="margin-top: 10px; color: var(--primary); font-weight: bold;">FX KARAM ACADEMY</div>
-                </div>
-                <button onclick="showLeaderboard()" style="margin-top: 15px;">Check Ranking 📊</button>
-            </div>
+            
+            <button class="action-btn" onclick="takeQuiz()">Take Quiz</button>
+            
+            <hr style="margin: 20px 0; opacity: 0.2;">
+            
+            <p style="font-size: 12px; margin-bottom: 5px; opacity: 0.8;">Screenshot ရိုက်ပြီးပါက အောက်ပါခလုတ်ကိုနှိပ်၍ ပို့ရန်</p>
+            <button class="action-btn screenshot-btn" onclick="goToGroup()">📸 Screenshot ပို့ရန်</button>
         </div>
     </div>
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot, setDoc, getDocs, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const tg = window.Telegram.WebApp;
-        tg.ready(); tg.expand();
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok",
-            authDomain: "trading-app-69b9d.firebaseapp.com",
-            projectId: "trading-app-69b9d",
-            storageBucket: "trading-app-69b9d.appspot.com",
-            messagingSenderId: "573273662231",
-            appId: "1:573273662231:web:fbbbc6876711e612190829"
+        const firebaseConfig = { 
+            apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok", 
+            authDomain: "trading-app-69b9d.firebaseapp.com", 
+            projectId: "trading-app-69b9d", 
+            storageBucket: "trading-app-69b9d.appspot.com", 
+            messagingSenderId: "573273662231", 
+            appId: "1:573273662231:web:fbbbc6876711e612190829" 
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
-
-        let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "Guest";
-        // Header တွင် အပြည့်ပြခြင်း
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        
+        let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "2020089609";
         document.getElementById('user-id-display').innerText = myUserId;
 
-        let userScores = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
-        let currentLesson = 1, qIdx = 0, qScore = 0;
-        const videos = { 1:"jyad4g6F8FU", 2:"DDLsFro2bpc", 3:"DwP9zFAC5EA", 4:"L_zlR6ZxXNg", 5:"GoRcLqAsYUg", 6:"n7owfWxBxmw", 7:"nYuowB5Wyts" };
-        const titles = { 1:"Market Structure", 2:"Order Blocks", 3:"Liquidity", 4:"Fair Value Gaps", 5:"Timeframe Correlation", 6:"Risk Management", 7:"Trading Psychology" };
+        const vids = ["jyad4g6F8FU", "DDLsFro2bpc", "DwP9zFAC5EA", "L_zlR6ZxXNg", "GoRcLqAsYUg", "n7owfWxBxmw", "nYuowB5Wyts"];
+        const titles = ["Market Structure", "Order Blocks", "Liquidity", "Fair Value Gaps", "Timeframe Correlation", "Risk Management", "Trading Psychology"];
 
-        const questions = {
-            1: [ { q: "၁။ Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "CHoCH", "Liquidity"], correct: 0 }, { q: "၂။ Downtrend တစ်ခုမှာ ဘယ်လို Structure မျိုးရှိသလဲ?", a: ["HH & HL", "LH & LL", "Equal High"], correct: 1 }, { q: "၃။ Trend ပြောင်းလဲမှုကို ပထမဆုံးပြသတဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 }, { q: "၄။ Uptrend မှာ ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher Low", "Market Gap"], correct: 1 }, { q: "၅။ 'Higher High' တွေ ဆက်တိုက်ဖြစ်နေတာက ဘယ်လို Market လဲ?", a: ["Bearish", "Bullish", "Sideways"], correct: 1 } ],
-            2: [ { q: "၁။ Order Block ဆိုတာ ဘာလဲ?", a: ["အရောင်တူ Candle များ", "နောက်ဆုံးဖြစ်ပေါ်ခဲ့တဲ့ ဆန့်ကျင်ဘက် Candle", "Market Gap"], correct: 1 }, { q: "၂။ Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a: ["ဈေးမတက်ခင် နောက်ဆုံးကျခဲ့တဲ့ အနီရောင် Candle", "ဈေးမကျခင် နောက်ဆုံးတက်ခဲ့တဲ့ အစိမ်းရောင် Candle", "Chart ရဲ့ အလယ်"], correct: 0 }, { q: "၃။ Bearish Order Block ဆိုတာ ဘယ်လိုနေရာမျိုးလဲ?", a: ["Demand Zone", "Supply Zone", "Sideways"], correct: 1 }, { q: "၄။ Order Block တစ်ခုက ဘယ်အချိန်မှာ ပိုအားကောင်းသလဲ?", a: ["BOS ဖြစ်စေခဲ့လျှင်", "အရွယ်အစားသေးလျှင်", "အရောင်တူလျှင်"], correct: 0 }, { q: "၅။ Supply Zone မှာ ဘယ်လို Setup မျိုး ရှာရမလဲ?", a: ["Buy Setup", "Sell Setup", "Hold"], correct: 1 } ],
-            3: [ { q: "၁။ Liquidity ဆိုတာ ဘာကို ရည်ညွှန်းတာလဲ?", a: ["ဈေးနှုန်းအတက်အကျ", "Stop Loss များ စုပုံနေသောနေရာ", "Market Gap"], correct: 1 }, { q: "၂။ Retail Trader တွေက Equal High/Low တွေကို ဘယ်လိုမြင်ကြသလဲ?", a: ["Liquidity Sweep", "Support & Resistance", "BOS"], correct: 1 }, { q: "၃။ Smart Money တွေက ဘာကြောင့် Liquidity Sweep လုပ်တာလဲ?", a: ["Trend ပြောင်းချင်လို့", "သူတို့ရဲ့ Order တွေဖြည့်ဖို့ လောင်စာယူခြင်း", "ဈေးကွက်ပိတ်ဖို့"], correct: 1 }, { q: "၄။ Trendline အောက်မှာ ဘာတွေရှိနေတတ်သလဲ?", a: ["Liquidity (Stop Losses)", "BOS", "Order Block"], correct: 0 }, { q: "၅။ 'Stop Hunt' ဆိုတာ ဘာလဲ?", a: ["အမြတ်ယူခြင်း", "Liquidity Sweep လုပ်ခြင်း", "အရောင်းရပ်ခြင်း"], correct: 1 } ],
-            4: [ { q: "၁။ Fair Value Gap (FVG) ကို Candle ဘယ်နှခုနဲ့ ကြည့်ရသလဲ?", a: ["၂ ခု", "၃ ခု", "၅ ခု"], correct: 1 }, { q: "၂။ FVG ဖြစ်ပေါ်ရခြင်းရဲ့ အဓိက အကြောင်းရင်းက ဘာလဲ?", a: ["Liquidity Sweep", "ဝယ်သူနဲ့ ရောင်းသူကြား မမျှတမှု (Imbalance)", "Market Close"], correct: 1 }, { q: "၃။ Bullish FVG မှာ ဘယ်နေရာကို 'Gap' အဖြစ် သတ်မှတ်သလဲ?", a: ["Candle ၁ ရဲ့ High နဲ့ Candle ၃ ရဲ့ Low ကြား", "Candle ၂ ရဲ့ အရွယ်အစား", "Candle အားလုံး"], correct: 0 }, { q: "၄။ ဈေးနှုန်းက FVG တွေဆီကို ဘာကြောင့် ပြန်လာတတ်တာလဲ?", a: ["Trend ပြောင်းဖို့", "ကျန်ခဲ့တဲ့ ဟာကွက်တွေကို ပြန်ဖြည့် (Rebalance) ဖို့", "Support ရှာဖို့"], correct: 1 }, { q: "၅။ အကောင်းဆုံး Entry နေရာက ဘယ်လိုမျိုးလဲ?", a: ["FVG တစ်ခုတည်းရှိလျှင်", "FVG နဲ့ Order Block ပေါင်းစပ်နေလျှင်", "Gap ကြီးလျှင်"], correct: 1 } ],
-            5: [ { q: "၁။ Top-Down Analysis ဆိုတာ ဘာလဲ?", a: ["Lower မှ Higher သို့သွားခြင်း", "Higher Timeframe မှ Lower သို့ ဆင်းခြင်း", "Chart အကုန်ဖွင့်ထားခြင်း"], correct: 1 }, { q: "၂။ Higher Timeframe (Daily) ကို ဘာအတွက် အဓိကသုံးသလဲ?", a: ["Entry Point ရှာရန်", "Market Direction (Trend) ကို သိရန်", "အရောင်းရပ်ရန်"], correct: 1 }, { q: "၃။ Lower Timeframe ကို ဘာအတွက် အဓိကသုံးသလဲ?", a: ["Direction သိရန်", "တကျိသော Entry point (Execution) အတွက်", "Trend ရှာရန်"], correct: 1 }, { q: "၄။ နိုင်ခြေအမြင့်ဆုံး Setup ဖြစ်ဖို့ ဘာလုပ်ရမလဲ?", a: ["Lower TF setup က Higher TF trend နှင့် ကိုက်ညီရမည်", "ချက်ချင်း Buy မည်", "Timeframe တစ်ခုတည်းကြည့်မည်"], correct: 0 }, { q: "၅။ Market Structure ပိုခိုင်မာသော Timeframe မှာ ဘယ်ဟာလဲ?", a: ["1-minute", "15-minute", "Daily"], correct: 2 } ],
-            6: [ { q: "၁။ Trading မှာ အရေးကြီးဆုံးအချက်က ဘာလဲ?", a: ["BOS ရှာခြင်း", "Risk Management (အရင်းအနှီး စီမံခန့်ခွဲမှု)", "Indicator သုံးခြင်း"], correct: 1 }, { q: "၂။ '1% Rule' အရ အော်ဒါတစ်ခုမှာ အများဆုံး ဘယ်လောက်ရှုံးခံသင့်သလဲ?", a: ["အကောင့်တစ်ခုလုံး၏ ၅ ရာခိုင်နှုန်း", "အကောင့်တစ်ခုလုံး၏ ၁ ရာခိုင်နှုန်း", "၁၀ ရာခိုင်နှုန်း"], correct: 1 }, { q: "၃။ Risk to Reward 1:3 ဆိုတာ ဘာကို ဆိုလိုတာလဲ?", a: ["၁ ဆ ရှုံးဖို့ ပြင်ဆင်ပြီး ၃ ဆ မြတ်ဖို့ မျှော်လင့်ခြင်း", "၃ ဆ ရှုံးပြီး ၁ ဆ မြတ်ခြင်း", "အရင်းအတိုင်း ပြန်ရခြင်း"], correct: 0 }, { q: "၄။ အရှုံးတွေ ဆက်တိုက်ဖြစ်နေရင်တောင် အကောင့်မပြတ်အောင် ဘာက ကူညီမလဲ?", a: ["Lot size အကြီးကြီးရိုက်ခြင်း", "Proper Position Sizing (မှန်ကန်သော Lot size သုံးစွဲခြင်း)", "ချက်ချင်း အရောင်းရပ်ခြင်း"], correct: 1 }, { q: "၅။ Trader တစ်ယောက်၏ ပထမဆုံးတာဝန်မှာ ဘာလဲ?", a: ["အမြန်ဆုံး သူဌေးဖြစ်ရန်", "အရင်းအနှီးကို မကုန်အောင် ထိန်းသိမ်းခြင်း (Capital Preservation)", "အော်ဒါအများကြီးဖွင့်ရန်"], correct: 1 } ],
-            7: [ { q: "၁။ Trading မှာ အောင်မြင်ဖို့အတွက် အရေးကြီးဆုံးက ဘာလဲ?", a: ["Indicator သစ်များ ရှာခြင်း", "Trading Psychology (စိတ်ပညာနှင့် စည်းကမ်း)", "သတင်းများ နားထောင်ခြင်း"], correct: 1 }, { q: "၂။ ရှုံးသွားတဲ့ငွေကို ချက်ချင်းပြန်ရအောင် ဇွတ်အတင်း Trading လုပ်ခြင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Swing Trading", "Revenge Trading", "Scalping"], correct: 1 }, { q: "၃။ FOMO ဆိုတာ ဘာကို ဆိုလိုတာလဲ?", a: ["အမြတ်များများယူခြင်း", "အခွင့်အရေး လက်လွတ်သွားမှာ ကြောက်ပြီး ဇွတ်ဝင်ခြင်း", "အရှုံးကို လက်ခံခြင်း"], correct: 1 }, { q: "၄။ Professional Trader တစ်ယောက်ဟာ အရှုံး (Loss) ကို ဘယ်လို မြင်သလဲ?", a: ["ကျရှုံးမှုကြီး တစ်ခုအဖြစ်", "လုပ်ငန်းကုန်ကျစရိတ် (Business Expense) တစ်ခုအဖြစ်", "အမြဲတမ်း ရှောင်လွှဲရမည့်အရာအဖြစ်"], correct: 1 }, { q: "၅။ Trading မှာ နိုင်ခြေ (Win Rate) ထက် ဘာက ပိုအရေးကြီးသလဲ?", a: ["Lot size ကြီးခြင်း", "စည်းကမ်းရှိရှိနဲ့ Plan အတိုင်း လုပ်ဆောင်ခြင်း (Discipline)", "ကံကောင်းခြင်း"], correct: 1 } ]
-        };
-
-        window.showLesson = (num) => {
-            currentLesson = num;
-            document.getElementById('lesson-title').innerText = "Lesson " + num + ": " + titles[num];
-            document.getElementById('video-frame').src = "https://www.youtube.com/embed/" + videos[num];
+        window.showLesson = (n) => {
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-l' + num).classList.add('active');
+            document.getElementById('n' + n).classList.add('active');
+            document.getElementById('lesson-title').innerText = "Lesson " + n + ": " + titles[n-1];
+            document.getElementById('video-frame').src = "https://www.youtube.com/embed/" + vids[n-1];
+        };
+
+        window.takeQuiz = async () => {
+            const userRef = doc(db, "users", myUserId);
+            const userSnap = await getDoc(userRef);
+            let currentScore = userSnap.exists() ? (userSnap.data().total_score || 0) : 0;
             
-            document.getElementById('lesson-view').classList.remove('hidden');
-            document.getElementById('quiz-area').classList.add('hidden');
-            document.getElementById('leaderboard-area').classList.add('hidden');
-            document.getElementById('certificate-wrap').classList.add('hidden');
+            await setDoc(userRef, { total_score: currentScore + 5 }, { merge: true });
+            alert("Quiz Completed! ၅ မှတ် ပေါင်းထည့်လိုက်ပါပြီ။");
         };
 
-        window.startQuiz = () => {
-            qIdx = 0; qScore = 0;
-            document.getElementById('lesson-view').classList.add('hidden');
-            document.getElementById('quiz-area').classList.remove('hidden');
-            document.getElementById('quiz-result').classList.add('hidden');
-            document.getElementById('question-container').classList.remove('hidden');
-            loadQ();
+        // Group ဆီသို့ တန်းခေါ်သွားမည့် Function
+        window.goToGroup = () => {
+            const groupLink = "https://t.me/+cbvtPsUU2gExYmY1";
+            tg.openTelegramLink(groupLink);
         };
 
-        function loadQ() {
-            const data = questions[currentLesson][qIdx];
-            document.getElementById('quiz-header').innerText = "Quiz: " + titles[currentLesson];
-            document.getElementById('question-text').innerText = data.q;
-            const list = document.getElementById('options-list'); list.innerHTML = "";
-            document.getElementById('next-btn').classList.add('hidden');
-            data.a.forEach((opt, i) => {
-                const b = document.createElement('button'); b.className = "quiz-option"; b.innerText = opt;
-                b.onclick = () => {
-                    if (i === data.correct) { b.classList.add('correct'); qScore++; }
-                    else { b.classList.add('wrong'); }
-                    document.getElementById('next-btn').classList.remove('hidden');
-                    document.querySelectorAll('.quiz-option').forEach(btn => btn.onclick = null);
-                };
-                list.appendChild(b);
-            });
-        }
-
-        window.nextQuestion = () => {
-            qIdx++;
-            if (qIdx < 5) loadQ();
-            else {
-                userScores[currentLesson] = qScore;
-                document.getElementById('question-container').classList.add('hidden');
-                document.getElementById('quiz-result').classList.remove('hidden');
-                document.getElementById('current-score-text').innerText = "Score: " + qScore + " / 5";
-                if (currentLesson === 7) {
-                    document.getElementById('final-cert-btn').classList.remove('hidden');
-                    saveFinalScore();
-                }
-            }
-        };
-
-        async function saveFinalScore() {
-            let total = 0; for(let k in userScores) total += userScores[k];
-            if (myUserId !== "Guest") {
-                await setDoc(doc(db, "users", myUserId), { total_score: total, last_updated: new Date() }, { merge: true });
-            }
-        }
-
-        // Ranking တွင် နောက်ဆုံး ၃ လုံးကို ဖျောက်ခြင်း
-        function maskUserId(id) {
-            if (id.length <= 3) return "***";
-            return id.slice(0, -3) + "***";
-        }
-
-        window.showLeaderboard = async () => {
-            document.getElementById('lesson-view').classList.add('hidden');
-            document.getElementById('quiz-area').classList.add('hidden');
-            document.getElementById('certificate-wrap').classList.add('hidden');
-            document.getElementById('leaderboard-area').classList.remove('hidden');
-            
-            const q = query(collection(db, "users"), orderBy("total_score", "desc"), limit(10));
-            const snap = await getDocs(q);
-            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = "";
-            
-            let rank = 1;
-            snap.forEach(docSnap => {
-                const data = docSnap.data();
-                if(data.total_score !== undefined) {
-                    const row = document.createElement('tr');
-                    if(docSnap.id === myUserId) row.className = "my-rank-row";
-                    // Ranking ထဲတွင်သာ mask လုပ်ထားသော ID ကိုပြပါမည်
-                    const displayedId = maskUserId(docSnap.id);
-                    row.innerHTML = `<td>${rank}</td><td>${displayedId}</td><td>${data.total_score}</td>`;
-                    tbody.appendChild(row);
-                    rank++;
-                }
-            });
-        };
-
-        window.generateCertificate = () => {
-            let total = 0; for(let k in userScores) total += userScores[k];
-            document.getElementById('quiz-area').classList.add('hidden');
-            document.getElementById('certificate-wrap').classList.remove('hidden');
-            document.getElementById('cert-user-id').innerText = myUserId;
-            document.getElementById('cert-total-score').innerText = "Total Score: " + total + " / 35";
-        };
-
-        window.backToLessons = () => showLesson(currentLesson);
-
-        if (myUserId !== "Guest") {
-            onSnapshot(doc(db, "users", myUserId), (docSnap) => {
-                if (docSnap.exists() && docSnap.data().is_approved === true) {
-                    document.getElementById('locked-section').classList.add('hidden');
-                    document.getElementById('unlocked-section').classList.remove('hidden');
-                    showLesson(1);
-                }
-            });
-        }
+        showLesson(1);
+        tg.expand();
     </script>
 </body>
 </html>
