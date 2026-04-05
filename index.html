@@ -6,56 +6,56 @@
     <title>Fx Karam Trading Academy</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
-        .container { max-width: 550px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); flex-grow: 1; }
-        h1 { color: #38bdf8; margin-bottom: 5px; font-size: 22px; }
+        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 550px; margin: auto; background: var(--card); padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); flex-grow: 1; }
+        h1 { color: var(--primary); margin-bottom: 5px; font-size: 22px; }
         .status-box { margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; }
-        .pending { background-color: #f59e0b; color: #ffffff; }
-        .approved { background-color: #10b981; color: #ffffff; }
+        .pending { background-color: #f59e0b; }
+        .approved { background-color: #10b981; }
         .hidden { display: none !important; }
         
-        /* Video Styling */
-        .video-container { margin-top: 15px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
-        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        /* Navigation Buttons */
-        button { background: #38bdf8; color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; }
+        /* Nav & Buttons */
+        button { background: var(--primary); color: #0f172a; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
         .nav-container { display: flex; justify-content: center; gap: 3px; flex-wrap: wrap; margin-bottom: 20px; }
-        .nav-btn { background: #334155; color: #fff; padding: 8px; flex: 1; min-width: 45px; font-size: 10px; border-radius: 5px; border: none; cursor: pointer; }
-        .nav-btn.active { background: #38bdf8; color: #0f172a; font-weight: bold; }
-        .copy-btn { width: auto; padding: 5px 12px; font-size: 12px; margin-left: 8px; display: inline-block; }
-
-        /* Quiz Styling */
-        .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
+        .nav-btn { background: #334155; color: #fff; padding: 8px; flex: 1; min-width: 45px; font-size: 10px; border-radius: 5px; border: none; }
+        .nav-btn.active { background: var(--primary); color: #0f172a; font-weight: bold; }
+        
+        /* Video & Quiz */
+        .video-container { margin-top: 15px; border: 2px solid var(--primary); border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
+        .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .quiz-option { background: #334155; color: white; text-align: left; padding: 12px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
 
-        /* Footer Style */
+        /* Leaderboard Style */
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0f172a; border-radius: 10px; overflow: hidden; }
+        .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; }
+        .leaderboard-table th { background: #334155; color: var(--primary); font-size: 13px; }
+        .my-rank-row { background: rgba(56, 189, 248, 0.2) !important; font-weight: bold; border: 1px solid var(--primary); }
+
+        /* Certificate */
+        #certificate-area { background: white; color: #0f172a; padding: 30px; border: 10px double var(--primary); border-radius: 10px; margin-top: 20px; }
+        .cert-title { font-family: 'Georgia', serif; font-size: 22px; font-weight: bold; }
         footer { margin-top: 30px; padding: 20px; border-top: 1px solid #334155; font-size: 13px; color: #94a3b8; }
-        .footer-link { color: #38bdf8; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Fx Karam Academy</h1>
-        <p style="font-size: 14px;">User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
-           <button onclick="copyID()" class="copy-btn">Copy</button>
-        </p>
+        <p style="font-size: 14px;">Trader: <span id="user-id-display" style="font-weight: bold; color: var(--primary);">Connecting...</span></p>
 
         <hr style="border: 0.5px solid #334155; margin: 15px 0;">
 
         <div id="locked-section">
             <div class="status-box pending">Approval လိုအပ်ပါသည်</div>
-            <p>သင်ခန်းစာများလေ့လာရန် KPay ဖြင့် ငွေလွှဲပြီး Screenshot ပို့ပေးပါ။</p>
             <p>KPay: <b>09456507877</b></p>
-            <button id="screenshot-btn" style="width:100%;">Screenshot ပို့ရန်</button>
+            <button onclick="tg.openTelegramLink('https://t.me/+cbvtPsUU2gExYmY1')">Screenshot ပို့ရန်</button>
         </div>
 
         <div id="unlocked-section" class="hidden">
-            <div class="status-box approved">Welcome, Trader! ✅</div>
-            
-            <div class="nav-container">
+            <div class="nav-container" id="main-nav">
                 <button class="nav-btn active" id="btn-l1" onclick="showLesson(1)">L-1</button>
                 <button class="nav-btn" id="btn-l2" onclick="showLesson(2)">L-2</button>
                 <button class="nav-btn" id="btn-l3" onclick="showLesson(3)">L-3</button>
@@ -63,90 +63,77 @@
                 <button class="nav-btn" id="btn-l5" onclick="showLesson(5)">L-5</button>
                 <button class="nav-btn" id="btn-l6" onclick="showLesson(6)">L-6</button>
                 <button class="nav-btn" id="btn-l7" onclick="showLesson(7)">L-7</button>
+                <button class="nav-btn" id="btn-rank" onclick="showLeaderboard()" style="background: #facc15; color: #000;">Ranking</button>
             </div>
 
             <div id="lesson-content-area">
-                <div id="lesson-1" class="lesson-div">
-                    <h3 style="color:#38bdf8;">Lesson 1: Market Structure</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(1)" style="width:100%;">Take Lesson 1 Quiz</button>
-                </div>
-                <div id="lesson-2" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 2: Order Blocks</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/DDLsFro2bpc" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(2)" style="width:100%;">Take Lesson 2 Quiz</button>
-                </div>
-                <div id="lesson-3" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 3: Liquidity</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/DwP9zFAC5EA" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(3)" style="width:100%;">Take Lesson 3 Quiz</button>
-                </div>
-                <div id="lesson-4" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 4: Fair Value Gaps (FVG)</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/L_zlR6ZxXNg" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(4)" style="width:100%;">Take Lesson 4 Quiz</button>
-                </div>
-                <div id="lesson-5" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 5: Timeframe Correlation</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/GoRcLqAsYUg" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(5)" style="width:100%;">Take Lesson 5 Quiz</button>
-                </div>
-                <div id="lesson-6" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 6: Risk Management</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/n7owfWxBxmw" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(6)" style="width:100%;">Take Lesson 6 Quiz</button>
-                </div>
-                <div id="lesson-7" class="lesson-div hidden">
-                    <h3 style="color:#38bdf8;">Lesson 7: Trading Psychology</h3>
-                    <div class="video-container"><iframe src="https://www.youtube.com/embed/nYuowB5Wyts" frameborder="0" allowfullscreen></iframe></div>
-                    <button onclick="startQuiz(7)" style="width:100%;">Take Lesson 7 Quiz</button>
+                <div id="lesson-current">
+                    <h3 id="lesson-title" style="color:var(--primary);">Lesson 1</h3>
+                    <div class="video-container"><iframe id="video-frame" src="" frameborder="0" allowfullscreen></iframe></div>
+                    <button onclick="startQuiz()">Take Quiz</button>
                 </div>
             </div>
 
-            <div id="quiz-area" class="hidden" style="text-align: left; margin-top: 20px; border-top: 1px solid #334155; padding-top: 20px;">
-                <h4 id="quiz-title" style="color: #38bdf8; text-align: center;"></h4>
+            <div id="quiz-area" class="hidden">
+                <h4 id="quiz-header" style="color: var(--primary);"></h4>
                 <div id="question-container">
-                    <p id="question-text" style="font-weight: bold; margin-bottom: 15px;"></p>
+                    <p id="question-text"></p>
                     <div id="options-list"></div>
-                    <p id="feedback-text" style="margin-top: 10px; font-weight: bold; min-height: 20px;"></p>
-                    <button id="next-btn" class="hidden" onclick="nextQuestion()" style="width:100%;">Next Question ➔</button>
+                    <button id="next-btn" class="hidden" onclick="nextQuestion()">Next Question ➔</button>
                 </div>
-                <div id="quiz-result" class="hidden" style="text-align: center;">
-                    <h2 id="final-score" style="color: #10b981;"></h2>
-                    <button onclick="backToLessons()" style="background: #64748b; width:100%;">Back to Lessons</button>
+                <div id="quiz-result" class="hidden">
+                    <h2 id="current-score-text"></h2>
+                    <button id="final-cert-btn" class="hidden" onclick="generateCertificate()" style="background: #facc15; color: #0f172a;">Get Certificate 🏆</button>
+                    <button onclick="backToLessons()" style="background: #64748b;">Back to Lessons</button>
                 </div>
+            </div>
+
+            <div id="leaderboard-area" class="hidden">
+                <h3 style="color:#facc15;">🏆 Top Traders</h3>
+                <table class="leaderboard-table">
+                    <thead><tr><th>Rank</th><th>Trader ID</th><th>Score</th></tr></thead>
+                    <tbody id="leaderboard-body"></tbody>
+                </table>
+                <button onclick="showLesson(currentLesson)" style="background: #334155; color: #fff;">Back</button>
+            </div>
+
+            <div id="certificate-wrap" class="hidden">
+                <div id="certificate-area">
+                    <div class="cert-title">CERTIFICATE</div>
+                    <p>Trader:</p>
+                    <div id="cert-user-id" style="font-size: 18px; font-weight:bold; border-bottom: 2px solid #000;"></div>
+                    <p>ICT/SMC FOUNDATION COURSE</p>
+                    <div id="cert-total-score" style="font-weight:bold; color:#10b981;"></div>
+                    <p style="margin-top:15px; color:var(--primary); font-weight:bold;">FX KARAM ACADEMY</p>
+                </div>
+                <button onclick="showLeaderboard()" style="margin-top:15px;">Check Ranking 📊</button>
             </div>
         </div>
     </div>
 
-    <footer id="footer-section" class="hidden">
-        Partner Broker: <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="footer-link">VT Markets (Open Account)</a>
-        <p style="font-size: 10px; margin-top: 5px;">© 2026 Fx Karam. All Rights Reserved.</p>
-    </footer>
+    <footer>Partner Broker: <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" style="color:var(--primary);">VT Markets</a></footer>
 
-    <script>
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot, setDoc, getDocs, collection, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
         const tg = window.Telegram.WebApp;
-        tg.ready();
-        document.getElementById('screenshot-btn').onclick = () => tg.openTelegramLink("https://t.me/+cbvtPsUU2gExYmY1");
+        tg.ready(); tg.expand();
 
-        function copyID() {
-            const id = document.getElementById('user-id-display').innerText;
-            if(id !== "Loading...") {
-                navigator.clipboard.writeText(id);
-                tg.showAlert("ID: " + id + " ကို Copy ကူးပြီးပါပြီ။");
-            }
-        }
+        const firebaseConfig = { apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok", authDomain: "trading-app-69b9d.firebaseapp.com", projectId: "trading-app-69b9d", storageBucket: "trading-app-69b9d.appspot.com", messagingSenderId: "573273662231", appId: "1:573273662231:web:fbbbc6876711e612190829" };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
 
-        function showLesson(num) {
-            document.querySelectorAll('.lesson-div').forEach(div => div.classList.add('hidden'));
-            document.getElementById('lesson-' + num).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById('btn-l' + num).classList.add('active');
-            document.getElementById('quiz-area').classList.add('hidden');
-        }
+        let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "Guest";
+        function maskId(id) { return id === "Guest" ? id : id.slice(0, -3) + "***"; }
+        document.getElementById('user-id-display').innerText = maskId(myUserId);
 
-        // Quiz Logic & Data
-        const lessonsData = {
+        // State
+        let userScores = { 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0 };
+        let currentLesson = 1, qIdx = 0, qScore = 0;
+        const videos = { 1:"jyad4g6F8FU", 2:"DDLsFro2bpc", 3:"DwP9zFAC5EA", 4:"L_zlR6ZxXNg", 5:"GoRcLqAsYUg", 6:"n7owfWxBxmw", 7:"nYuowB5Wyts" };
+        const titles = { 1:"Market Structure", 2:"Order Blocks", 3:"Liquidity", 4:"Fair Value Gaps", 5:"Timeframe Correlation", 6:"Risk Management", 7:"Trading Psychology" };
+        const questions = {
             1: [ { q: "၁။ Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "CHoCH", "Liquidity"], correct: 0 }, { q: "၂။ Downtrend တစ်ခုမှာ ဘယ်လို Structure မျိုးရှိသလဲ?", a: ["HH & HL", "LH & LL", "Equal High"], correct: 1 }, { q: "၃။ Trend ပြောင်းလဲမှုကို ပထမဆုံးပြသတဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 }, { q: "၄။ Uptrend မှာ ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher Low", "Market Gap"], correct: 1 }, { q: "၅။ 'Higher High' တွေ ဆက်တိုက်ဖြစ်နေတာက ဘယ်လို Market လဲ?", a: ["Bearish", "Bullish", "Sideways"], correct: 1 } ],
             2: [ { q: "၁။ Order Block ဆိုတာ ဘာလဲ?", a: ["အရောင်တူ Candle များ", "နောက်ဆုံးဖြစ်ပေါ်ခဲ့တဲ့ ဆန့်ကျင်ဘက် Candle", "Market Gap"], correct: 1 }, { q: "၂။ Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a: ["ဈေးမတက်ခင် နောက်ဆုံးကျခဲ့တဲ့ အနီရောင် Candle", "ဈေးမကျခင် နောက်ဆုံးတက်ခဲ့တဲ့ အစိမ်းရောင် Candle", "Chart ရဲ့ အလယ်"], correct: 0 }, { q: "၃။ Bearish Order Block ဆိုတာ ဘယ်လိုနေရာမျိုးလဲ?", a: ["Demand Zone", "Supply Zone", "Sideways"], correct: 1 }, { q: "၄။ Order Block တစ်ခုက ဘယ်အချိန်မှာ ပိုအားကောင်းသလဲ?", a: ["BOS ဖြစ်စေခဲ့လျှင်", "အရွယ်အစားသေးလျှင်", "အရောင်တူလျှင်"], correct: 0 }, { q: "၅။ Supply Zone မှာ ဘယ်လို Setup မျိုး ရှာရမလဲ?", a: ["Buy Setup", "Sell Setup", "Hold"], correct: 1 } ],
             3: [ { q: "၁။ Liquidity ဆိုတာ ဘာကို ရည်ညွှန်းတာလဲ?", a: ["ဈေးနှုန်းအတက်အကျ", "Stop Loss များ စုပုံနေသောနေရာ", "Market Gap"], correct: 1 }, { q: "၂။ Retail Trader တွေက Equal High/Low တွေကို ဘယ်လိုမြင်ကြသလဲ?", a: ["Liquidity Sweep", "Support & Resistance", "BOS"], correct: 1 }, { q: "၃။ Smart Money တွေက ဘာကြောင့် Liquidity Sweep လုပ်တာလဲ?", a: ["Trend ပြောင်းချင်လို့", "သူတို့ရဲ့ Order တွေဖြည့်ဖို့ လောင်စာယူခြင်း", "ဈေးကွက်ပိတ်ဖို့"], correct: 1 }, { q: "၄။ Trendline အောက်မှာ ဘာတွေရှိနေတတ်သလဲ?", a: ["Liquidity (Stop Losses)", "BOS", "Order Block"], correct: 0 }, { q: "၅။ 'Stop Hunt' ဆိုတာ ဘာလဲ?", a: ["အမြတ်ယူခြင်း", "Liquidity Sweep လုပ်ခြင်း", "အရောင်းရပ်ခြင်း"], correct: 1 } ],
@@ -156,65 +143,108 @@
             7: [ { q: "၁။ Trading မှာ အောင်မြင်ဖို့အတွက် အရေးကြီးဆုံးက ဘာလဲ?", a: ["Indicator သစ်များ ရှာခြင်း", "Trading Psychology (စိတ်ပညာနှင့် စည်းကမ်း)", "သတင်းများ နားထောင်ခြင်း"], correct: 1 }, { q: "၂။ ရှုံးသွားတဲ့ငွေကို ချက်ချင်းပြန်ရအောင် ဇွတ်အတင်း Trading လုပ်ခြင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Swing Trading", "Revenge Trading", "Scalping"], correct: 1 }, { q: "၃။ FOMO ဆိုတာ ဘာကို ဆိုလိုတာလဲ?", a: ["အမြတ်များများယူခြင်း", "အခွင့်အရေး လက်လွတ်သွားမှာ ကြောက်ပြီး ဇွတ်ဝင်ခြင်း", "အရှုံးကို လက်ခံခြင်း"], correct: 1 }, { q: "၄။ Professional Trader တစ်ယောက်ဟာ အရှုံး (Loss) ကို ဘယ်လို မြင်သလဲ?", a: ["ကျရှုံးမှုကြီး တစ်ခုအဖြစ်", "လုပ်ငန်းကုန်ကျစရိတ် (Business Expense) တစ်ခုအဖြစ်", "အမြဲတမ်း ရှောင်လွှဲရမည့်အရာအဖြစ်"], correct: 1 }, { q: "၅။ Trading မှာ နိုင်ခြေ (Win Rate) ထက် ဘာက ပိုအရေးကြီးသလဲ?", a: ["Lot size ကြီးခြင်း", "စည်းကမ်းရှိရှိနဲ့ Plan အတိုင်း လုပ်ဆောင်ခြင်း (Discipline)", "ကံကောင်းခြင်း"], correct: 1 } ]
         };
 
-        let currentQuiz = [], currentIdx = 0, score = 0, canClick = true;
-        function startQuiz(num) {
-            currentQuiz = lessonsData[num]; currentIdx = 0; score = 0;
-            document.getElementById('quiz-title').innerText = "Lesson " + num + " Quiz";
-            document.querySelectorAll('.lesson-div').forEach(div => div.classList.add('hidden'));
-            document.getElementById('quiz-area').classList.remove('hidden');
-            document.getElementById('question-container').classList.remove('hidden');
-            document.getElementById('quiz-result').classList.add('hidden'); loadQuestion();
-        }
-        function loadQuestion() {
-            canClick = true; const item = currentQuiz[currentIdx];
-            document.getElementById('question-text').innerText = item.q;
-            document.getElementById('feedback-text').innerText = "";
-            document.getElementById('next-btn').classList.add('hidden');
-            const list = document.getElementById('options-list'); list.innerHTML = "";
-            item.a.forEach((opt, i) => {
-                const btn = document.createElement('button'); btn.innerText = opt; btn.className = "quiz-option";
-                btn.onclick = () => { if (!canClick) return; canClick = false; const correctIdx = item.correct;
-                    if (i === correctIdx) { btn.classList.add('correct'); score++; } else { btn.classList.add('wrong'); list.children[correctIdx].classList.add('correct'); }
-                    document.getElementById('next-btn').classList.remove('hidden');
-                }; list.appendChild(btn);
-            });
-        }
-        function nextQuestion() {
-            currentIdx++; if (currentIdx < currentQuiz.length) loadQuestion();
-            else { document.getElementById('question-container').classList.add('hidden'); document.getElementById('quiz-result').classList.remove('hidden');
-                document.getElementById('final-score').innerText = "ရမှတ်: " + score + " / " + currentQuiz.length; }
-        }
-        function backToLessons() { document.getElementById('quiz-area').classList.add('hidden'); const activeId = document.querySelector('.nav-btn.active').id; showLesson(parseInt(activeId.replace('btn-l', ''))); }
-    </script>
-
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyA5wJhY38C5GMgxjJuGDDejtIje36MvBok",
-            authDomain: "trading-app-69b9d.firebaseapp.com",
-            projectId: "trading-app-69b9d",
-            storageBucket: "trading-app-69b9d.appspot.com",
-            messagingSenderId: "573273662231",
-            appId: "1:573273662231:web:fbbbc6876711e612190829"
+        // Functions
+        window.showLesson = (num) => {
+            currentLesson = num;
+            document.getElementById('lesson-title').innerText = "Lesson " + num + ": " + titles[num];
+            document.getElementById('video-frame').src = "https://www.youtube.com/embed/" + videos[num];
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('btn-l' + num).classList.add('active');
+            document.getElementById('lesson-current').classList.remove('hidden');
+            document.getElementById('quiz-area').classList.add('hidden');
+            document.getElementById('leaderboard-area').classList.add('hidden');
+            document.getElementById('certificate-wrap').classList.add('hidden');
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        
-        let myUserId = "Guest";
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            myUserId = tg.initDataUnsafe.user.id.toString();
-        }
-        document.getElementById('user-id-display').innerText = myUserId;
+        window.startQuiz = () => {
+            qIdx = 0; qScore = 0;
+            document.getElementById('lesson-current').classList.add('hidden');
+            document.getElementById('quiz-area').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('question-container').classList.remove('hidden');
+            loadQ();
+        };
 
+        function loadQ() {
+            const data = questions[currentLesson][qIdx];
+            document.getElementById('quiz-header').innerText = "Quiz: " + titles[currentLesson];
+            document.getElementById('question-text').innerText = data.q;
+            const list = document.getElementById('options-list'); list.innerHTML = "";
+            document.getElementById('next-btn').classList.add('hidden');
+            data.a.forEach((opt, i) => {
+                const b = document.createElement('button'); b.className = "quiz-option"; b.innerText = opt;
+                b.onclick = () => {
+                    if (i === data.correct) { b.classList.add('correct'); qScore++; }
+                    else { b.classList.add('wrong'); }
+                    document.getElementById('next-btn').classList.remove('hidden');
+                    document.querySelectorAll('.quiz-option').forEach(btn => btn.onclick = null);
+                };
+                list.appendChild(b);
+            });
+        }
+
+        window.nextQuestion = () => {
+            qIdx++;
+            if (qIdx < 5) loadQ();
+            else {
+                userScores[currentLesson] = qScore;
+                document.getElementById('question-container').classList.add('hidden');
+                document.getElementById('quiz-result').classList.remove('hidden');
+                document.getElementById('current-score-text').innerText = "Lesson " + currentLesson + " Score: " + qScore + " / 5";
+                if (currentLesson === 7) {
+                    document.getElementById('final-cert-btn').classList.remove('hidden');
+                    saveFinalScore();
+                }
+            }
+        };
+
+        async function saveFinalScore() {
+            let total = 0; for(let k in userScores) total += userScores[k];
+            if (myUserId !== "Guest") {
+                await setDoc(doc(db, "users", myUserId), { total_score: total, last_updated: new Date() }, { merge: true });
+            }
+        }
+
+        window.showLeaderboard = async () => {
+            document.getElementById('unlocked-section').querySelectorAll('> div').forEach(d => d.classList.add('hidden'));
+            document.getElementById('main-nav').classList.remove('hidden');
+            document.getElementById('leaderboard-area').classList.remove('hidden');
+            
+            const q = query(collection(db, "users"), orderBy("total_score", "desc"), limit(10));
+            const snap = await getDocs(q);
+            const tbody = document.getElementById('leaderboard-body'); tbody.innerHTML = "";
+            
+            let rank = 1;
+            snap.forEach(doc => {
+                const data = doc.data();
+                if(data.total_score !== undefined) {
+                    const row = document.createElement('tr');
+                    if(doc.id === myUserId) row.className = "my-rank-row";
+                    let icon = rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : rank;
+                    row.innerHTML = `<td>${icon}</td><td>${maskId(doc.id)}</td><td>${data.total_score}</td>`;
+                    tbody.appendChild(row);
+                    rank++;
+                }
+            });
+        };
+
+        window.generateCertificate = () => {
+            let total = 0; for(let k in userScores) total += userScores[k];
+            document.getElementById('quiz-area').classList.add('hidden');
+            document.getElementById('certificate-wrap').classList.remove('hidden');
+            document.getElementById('cert-user-id').innerText = maskId(myUserId);
+            document.getElementById('cert-total-score').innerText = "Total Score: " + total + " / 35";
+        };
+
+        window.backToLessons = () => showLesson(currentLesson);
+
+        // Approval check
         if (myUserId !== "Guest") {
             onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
-                    document.getElementById('footer-section').classList.remove('hidden');
+                    showLesson(1);
                 }
             });
         }
