@@ -6,17 +6,13 @@
     <title>Fx Karam Trading Academy</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; margin: 0; }
-        .container { max-width: 550px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; text-align: center; padding: 20px; margin: 0; display: flex; flex-direction: column; min-height: 100vh; }
+        .container { max-width: 550px; margin: auto; background: #1e293b; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); flex-grow: 1; }
         h1 { color: #38bdf8; margin-bottom: 5px; font-size: 22px; }
         .status-box { margin: 15px 0; padding: 12px; border-radius: 8px; font-weight: bold; }
         .pending { background-color: #f59e0b; color: #ffffff; }
         .approved { background-color: #10b981; color: #ffffff; }
         .hidden { display: none !important; }
-        
-        /* IB Section Styling */
-        .ib-container { background: #1e293b; border: 2px dashed #38bdf8; padding: 15px; border-radius: 10px; margin: 15px 0; }
-        .ib-btn { background: #facc15 !important; color: #0f172a !important; font-size: 16px !important; margin-bottom: 5px; width: 100%; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
         
         /* Video Styling */
         .video-container { margin-top: 15px; border: 2px solid #38bdf8; border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
@@ -33,6 +29,10 @@
         .quiz-option { background: #334155; color: white; transition: 0.3s; text-align: left; padding: 12px; font-size: 14px; width: 100%; margin-bottom: 8px; border: none; border-radius: 8px; cursor: pointer; }
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
+
+        /* Footer Style */
+        footer { margin-top: 30px; padding: 20px; border-top: 1px solid #334155; font-size: 13px; color: #94a3b8; }
+        .footer-link { color: #38bdf8; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -42,12 +42,6 @@
         <p style="font-size: 14px;">User ID: <span id="user-id-display" style="font-weight: bold; color: #38bdf8;">Loading...</span> 
            <button onclick="copyID()" class="copy-btn">Copy</button>
         </p>
-
-        <div id="ib-section" class="hidden ib-container">
-            <p style="font-size: 14px; margin-top: 0;">Trading အကောင့်မရှိသေးသူများ အောက်တွင် ဖွင့်နိုင်ပါသည်။</p>
-            <button class="ib-btn" onclick="window.open('https://www.vtmarkets.com/trade-now/?affid=26620293', '_blank')">🌐 Open VT Markets Account</button>
-            <p style="font-size: 11px; color: #94a3b8;">* အကောင့်ဖွင့်ပြီးပါက Admin ထံသို့ Trading ID ပို့ပေးပါ။</p>
-        </div>
 
         <hr style="border: 0.5px solid #334155; margin: 15px 0;">
 
@@ -125,6 +119,11 @@
         </div>
     </div>
 
+    <footer id="footer-section" class="hidden">
+        Partner Broker: <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="footer-link">VT Markets (Open Account)</a>
+        <p style="font-size: 10px; margin-top: 5px;">© 2026 Fx Karam. All Rights Reserved.</p>
+    </footer>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.ready();
@@ -146,6 +145,7 @@
             document.getElementById('quiz-area').classList.add('hidden');
         }
 
+        // Quiz Logic & Data
         const lessonsData = {
             1: [ { q: "၁။ Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "CHoCH", "Liquidity"], correct: 0 }, { q: "၂။ Downtrend တစ်ခုမှာ ဘယ်လို Structure မျိုးရှိသလဲ?", a: ["HH & HL", "LH & LL", "Equal High"], correct: 1 }, { q: "၃။ Trend ပြောင်းလဲမှုကို ပထမဆုံးပြသတဲ့ လက္ခဏာက ဘာလဲ?", a: ["BOS", "CHoCH", "Order Block"], correct: 1 }, { q: "၄။ Uptrend မှာ ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်သလဲ?", a: ["Lower Low", "Higher Low", "Market Gap"], correct: 1 }, { q: "၅။ 'Higher High' တွေ ဆက်တိုက်ဖြစ်နေတာက ဘယ်လို Market လဲ?", a: ["Bearish", "Bullish", "Sideways"], correct: 1 } ],
             2: [ { q: "၁။ Order Block ဆိုတာ ဘာလဲ?", a: ["အရောင်တူ Candle များ", "နောက်ဆုံးဖြစ်ပေါ်ခဲ့တဲ့ ဆန့်ကျင်ဘက် Candle", "Market Gap"], correct: 1 }, { q: "၂။ Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a: ["ဈေးမတက်ခင် နောက်ဆုံးကျခဲ့တဲ့ အနီရောင် Candle", "ဈေးမကျခင် နောက်ဆုံးတက်ခဲ့တဲ့ အစိမ်းရောင် Candle", "Chart ရဲ့ အလယ်"], correct: 0 }, { q: "၃။ Bearish Order Block ဆိုတာ ဘယ်လိုနေရာမျိုးလဲ?", a: ["Demand Zone", "Supply Zone", "Sideways"], correct: 1 }, { q: "၄။ Order Block တစ်ခုက ဘယ်အချိန်မှာ ပိုအားကောင်းသလဲ?", a: ["BOS ဖြစ်စေခဲ့လျှင်", "အရွယ်အစားသေးလျှင်", "အရောင်တူလျှင်"], correct: 0 }, { q: "၅။ Supply Zone မှာ ဘယ်လို Setup မျိုး ရှာရမလဲ?", a: ["Buy Setup", "Sell Setup", "Hold"], correct: 1 } ],
@@ -214,7 +214,7 @@
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
                     document.getElementById('locked-section').classList.add('hidden');
                     document.getElementById('unlocked-section').classList.remove('hidden');
-                    document.getElementById('ib-section').classList.remove('hidden');
+                    document.getElementById('footer-section').classList.remove('hidden');
                 }
             });
         }
