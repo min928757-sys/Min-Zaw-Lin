@@ -15,17 +15,14 @@
         .approved { background-color: #10b981; color: #ffffff; }
         .hidden { display: none !important; }
         
-        /* Nav & Buttons */
         button { background: var(--primary); color: #0f172a; border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 15px; transition: 0.3s; margin-top: 10px; width: 100%; }
         .nav-container { display: flex; justify-content: center; gap: 3px; flex-wrap: wrap; margin-bottom: 20px; }
         .nav-btn { background: #334155; color: #fff; padding: 8px; flex: 1; min-width: 45px; font-size: 10px; border-radius: 5px; border: none; cursor: pointer; }
         .nav-btn.active { background: var(--primary); color: #0f172a; font-weight: bold; }
         
-        /* Video & Quiz */
         .video-container { margin-top: 15px; border: 2px solid var(--primary); border-radius: 10px; overflow: hidden; position: relative; padding-bottom: 56.25%; height: 0; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
         
-        /* Broker Link Box (New Position) */
         .broker-box { margin-top: 20px; padding: 15px; border: 1px dashed var(--primary); border-radius: 10px; background: rgba(56, 189, 248, 0.05); }
         .broker-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 15px; }
 
@@ -33,7 +30,6 @@
         .correct { background: #10b981 !important; }
         .wrong { background: #ef4444 !important; }
 
-        /* Leaderboard Style */
         .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #0f172a; border-radius: 10px; overflow: hidden; }
         .leaderboard-table th, .leaderboard-table td { padding: 12px; text-align: center; border-bottom: 1px solid #1e293b; }
         .leaderboard-table th { background: #334155; color: var(--primary); font-size: 13px; }
@@ -72,7 +68,6 @@
                     <div class="video-container"><iframe id="video-frame" src="https://www.youtube.com/embed/jyad4g6F8FU" frameborder="0" allowfullscreen></iframe></div>
                     <button onclick="startQuiz()">Take Quiz</button>
                 </div>
-
                 <div class="broker-box">
                     Open Live Account - <a href="https://www.vtmarkets.com/trade-now/?affid=26620293" target="_blank" class="broker-link">VT Markets</a>
                 </div>
@@ -134,6 +129,7 @@
         const db = getFirestore(app);
 
         let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "Guest";
+        // Header တွင် အပြည့်ပြခြင်း
         document.getElementById('user-id-display').innerText = myUserId;
 
         let userScores = {1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0};
@@ -213,6 +209,12 @@
             }
         }
 
+        // Ranking တွင် နောက်ဆုံး ၃ လုံးကို ဖျောက်ခြင်း
+        function maskUserId(id) {
+            if (id.length <= 3) return "***";
+            return id.slice(0, -3) + "***";
+        }
+
         window.showLeaderboard = async () => {
             document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-area').classList.add('hidden');
@@ -229,7 +231,9 @@
                 if(data.total_score !== undefined) {
                     const row = document.createElement('tr');
                     if(docSnap.id === myUserId) row.className = "my-rank-row";
-                    row.innerHTML = `<td>${rank}</td><td>${docSnap.id}</td><td>${data.total_score}</td>`;
+                    // Ranking ထဲတွင်သာ mask လုပ်ထားသော ID ကိုပြပါမည်
+                    const displayedId = maskUserId(docSnap.id);
+                    row.innerHTML = `<td>${rank}</td><td>${displayedId}</td><td>${data.total_score}</td>`;
                     tbody.appendChild(row);
                     rank++;
                 }
@@ -246,7 +250,6 @@
 
         window.backToLessons = () => showLesson(currentLesson);
 
-        // Firebase Logic (Approval Check)
         if (myUserId !== "Guest") {
             onSnapshot(doc(db, "users", myUserId), (docSnap) => {
                 if (docSnap.exists() && docSnap.data().is_approved === true) {
