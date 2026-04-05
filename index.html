@@ -6,38 +6,49 @@
     <title>Fx Karam Trading Academy</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #facc15; }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 15px; margin: 0; }
+        :root { --primary: #38bdf8; --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #facc15; --success: #10b981; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background-color: var(--bg); color: var(--text); text-align: center; padding: 15px; margin: 0; }
         .container { max-width: 480px; margin: auto; background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
         
-        /* Rank Badge Style */
-        .rank-badge { background: linear-gradient(135deg, #0ea5e9, #2563eb); color: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; font-weight: bold; border: 2px solid var(--primary); }
-        .badge-gold { background: linear-gradient(135deg, #f59e0b, #d97706); border-color: #facc15; }
-        
-        .nav-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 20px; }
-        .nav-btn { background: #334155; color: #fff; padding: 10px 5px; font-size: 11px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
-        .nav-btn.active { background: var(--primary); color: #000; }
-        
-        .video-container { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 15px; overflow: hidden; margin: 15px 0; border: 2px solid #334155; }
+        .user-id-bar { font-size: 12px; color: var(--primary); margin-bottom: 15px; opacity: 0.8; }
+
+        /* Smooth Nav */
+        .nav-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
+        .nav-btn { background: #334155; color: #fff; padding: 10px 2px; font-size: 11px; border-radius: 8px; border: none; cursor: pointer; transition: 0.2s; font-weight: bold; }
+        .nav-btn.active { background: var(--primary); color: #000; box-shadow: 0 0 10px rgba(56, 189, 248, 0.3); }
+
+        .video-container { position: relative; padding-bottom: 56.25%; height: 0; border-radius: 12px; overflow: hidden; margin: 15px 0; border: 2px solid #334155; background: #000; }
         .video-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
-        
-        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 15px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; }
+
+        .action-btn { background: var(--primary); color: #0f172a; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; font-size: 15px; transition: 0.2s; }
+        .action-btn:active { transform: scale(0.98); }
+
+        /* Quiz UI */
+        .option-btn { background: #334155; color: white; padding: 12px; border-radius: 10px; width: 100%; margin-bottom: 10px; border: 1px solid #475569; text-align: left; cursor: pointer; font-size: 14px; display: block; }
+        .correct { background: var(--success) !important; border-color: #059669 !important; }
+        .wrong { background: #ef4444 !important; border-color: #dc2626 !important; }
+        .progress-bar { height: 6px; background: #334155; border-radius: 10px; margin-bottom: 15px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--primary); width: 0%; transition: 0.3s; }
+
         .hidden { display: none !important; }
         
-        /* Quiz Styles */
-        .option-btn { background: #334155; color: white; padding: 12px; border-radius: 8px; width: 100%; margin-bottom: 10px; border: 1px solid #475569; text-align: left; cursor: pointer; display: block; }
-        .correct { background: #10b981 !important; border-color: #059669 !important; }
-        .wrong { background: #ef4444 !important; border-color: #dc2626 !important; }
-
-        .rank-table { width: 100%; margin-top: 15px; border-collapse: collapse; }
-        .rank-table th, .rank-table td { padding: 10px; border-bottom: 1px solid #334155; }
+        /* Leaderboard Table with Badge Column */
+        .rank-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .rank-table th, .rank-table td { padding: 12px 8px; border-bottom: 1px solid #334155; font-size: 13px; }
+        .rank-table th { color: var(--primary); }
+        .level-tag { font-size: 10px; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; }
+        .lvl-pro { background: var(--accent); }
+        .lvl-adv { background: var(--primary); }
+        .lvl-jun { background: var(--success); }
+        .lvl-new { background: #94a3b8; }
+        .my-row { background: rgba(56, 189, 248, 0.15); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2 style="color: var(--primary); margin:0;">Fx Karam Academy</h2>
-        <div id="user-rank-display" class="rank-badge">Trader Level: Loading...</div>
+        <h2 style="color: var(--primary); margin:0 0 5px 0; font-size: 22px;">Fx Karam Academy</h2>
+        <div class="user-id-bar">ID: <span id="user-id-display">...</span></div>
 
         <div class="nav-container">
             <button class="nav-btn active" id="n1" onclick="showLesson(1)">L-1</button>
@@ -47,28 +58,29 @@
             <button class="nav-btn" id="n5" onclick="showLesson(5)">L-5</button>
             <button class="nav-btn" id="n6" onclick="showLesson(6)">L-6</button>
             <button class="nav-btn" id="n7" onclick="showLesson(7)">L-7</button>
-            <button class="nav-btn" style="background:var(--accent); color:#000;" onclick="showRank()">Rank</button>
+            <button class="nav-btn" style="background:var(--accent); color:#000;" onclick="showRank()">Ranking</button>
         </div>
 
         <div id="lesson-view">
-            <h3 id="l-title">Lesson 1: Market Structure</h3>
+            <h4 id="l-title" style="margin: 10px 0; color: var(--primary);">Lesson 1</h4>
             <div class="video-container"><iframe id="v-frame" src="" frameborder="0" allowfullscreen></iframe></div>
-            <button class="action-btn" onclick="startQuiz()">Take Lesson Quiz</button>
+            <button class="action-btn" onclick="startQuiz()">Take Quiz (5 Questions)</button>
         </div>
 
         <div id="quiz-view" class="hidden">
-            <h3 id="q-title" style="color:var(--primary);">Quiz</h3>
-            <p id="q-text" style="font-weight:bold; margin-bottom:20px;">Question here?</p>
+            <div class="progress-bar"><div id="p-fill" class="progress-fill"></div></div>
+            <p id="q-count" style="font-size:12px; color:var(--primary); margin:0;">Question 1 of 5</p>
+            <p id="q-text" style="font-weight:bold; margin: 15px 0; font-size: 15px;">Question here?</p>
             <div id="options-box"></div>
         </div>
 
         <div id="rank-view" class="hidden">
-            <h3 style="color:var(--accent);">🏆 Top 10 Traders</h3>
+            <h3 style="color:var(--accent); margin-top:0;">🏆 Top Traders</h3>
             <table class="rank-table">
-                <thead><tr><th>Rank</th><th>User</th><th>Score</th></tr></thead>
+                <thead><tr><th>Rank</th><th>User</th><th>Level</th><th>Score</th></tr></thead>
                 <tbody id="rank-body"></tbody>
             </table>
-            <button class="action-btn" onclick="showLesson(1)">Back to Academy</button>
+            <button class="action-btn" onclick="showLesson(currentL)" style="background:#475569; color:white;">Back to Academy</button>
         </div>
     </div>
 
@@ -82,23 +94,23 @@
         const tg = window.Telegram.WebApp;
 
         let myUserId = tg.initDataUnsafe?.user?.id?.toString() || "2020089609";
-        let currentL = 1;
+        document.getElementById('user-id-display').innerText = myUserId;
+        let currentL = 1, qIdx = 0;
         const vids = ["jyad4g6F8FU", "DDLsFro2bpc", "DwP9zFAC5EA", "L_zlR6ZxXNg", "GoRcLqAsYUg", "n7owfWxBxmw", "nYuowB5Wyts"];
         const titles = ["Market Structure", "Order Blocks", "Liquidity", "Fair Value Gaps", "Timeframe Correlation", "Risk Management", "Trading Psychology"];
 
-        // Quiz Questions Data
-        const questions = {
-            1: { q: "Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "CHoCH", "Liquidity"], c: 0 },
-            2: { q: "Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a: ["Supply Zone", "ဈေးမတက်ခင် နောက်ဆုံးကျခဲ့တဲ့ Candle", "Market Gap"], c: 1 },
-            3: { q: "Stop Loss များ စုပုံနေသောနေရာကို ဘယ်လိုခေါ်သလဲ?", a: ["BOS", "Order Block", "Liquidity"], c: 2 },
-            4: { q: "FVG ကို Candle ဘယ်နှခုနဲ့ ကြည့်ရသလဲ?", a: ["၂ ခု", "၃ ခု", "၄ ခု"], c: 1 },
-            5: { q: "Daily Timeframe ကို ဘာအတွက် အဓိကသုံးသလဲ?", a: ["Execution", "Trend Direction သိရန်", "Entry ရှာရန်"], c: 1 },
-            6: { q: "Trading မှာ ၁ အော်ဒါကို အရင်းအနှီးရဲ့ ဘယ်လောက်ပဲ ရှုံးခံသင့်သလဲ?", a: ["၁ ရာခိုင်နှုန်း", "၁၀ ရာခိုင်နှုန်း", "၅၀ ရာခိုင်နှုန်း"], c: 0 },
-            7: { q: "ရှုံးသွားတဲ့ငွေကို ဇွတ်ပြန်ရအောင် လုပ်တာကို ဘယ်လိုခေါ်သလဲ?", a: ["Scalping", "Revenge Trading", "Swing Trading"], c: 1 }
+        const allQuestions = {
+            1: [ {q:"Uptrend မှာ Previous High ကို ဖောက်ထွက်သွားတာကို ဘယ်လိုခေါ်သလဲ?", a:["BOS", "CHoCH", "Gap"], c:0}, {q:"Downtrend တစ်ခုမှာ ဘယ်လို Structure မျိုးရှိသလဲ?", a:["HH & HL", "LH & LL", "Equal High"], c:1}, {q:"Trend ပြောင်းလဲမှုကို ပထမဆုံးပြသတဲ့ လက္ခဏာက ဘာလဲ?", a:["BOS", "CHoCH", "OB"], c:1}, {q:"Uptrend မှာ ခေတ္တပြန်ဆင်းလာတဲ့ အနိမ့်ပိုင်းကို ဘယ်လိုခေါ်လဲ?", a:["LL", "HL", "HH"], c:1}, {q:"Higher High တွေ ဆက်တိုက်ဖြစ်နေတာက ဘယ်လို Market လဲ?", a:["Bearish", "Bullish", "Sideways"], c:1} ],
+            2: [ {q:"Bullish Order Block ကို ဘယ်နေရာမှာ ရှာရမလဲ?", a:["Supply Zone", "ဈေးမတက်ခင် နောက်ဆုံးကျတဲ့ Candle", "Gap"], c:1}, {q:"Order Block က ဘယ်အချိန်မှာ ပိုအားကောင်းသလဲ?", a:["BOS ဖြစ်စေခဲ့ရင်", "အရွယ်အစားသေးရင်", "အရောင်တူရင်"], c:0}, {q:"Supply Zone မှာ ဘယ်လို Setup ရှာရမလဲ?", a:["Buy", "Sell", "Wait"], c:1}, {q:"Bearish OB ဆိုတာ ဘာလဲ?", a:["Demand", "Supply", "BOS"], c:1}, {q:"OB ဆိုတာ ဘာလဲ?", a:["နောက်ဆုံးဆန့်ကျင်ဘက် Candle", "အရောင်တူ Candle", "Gap"], c:0} ],
+            3: [ {q:"Liquidity ဆိုတာ ဘာလဲ?", a:["Market Gap", "Stop Loss စုပုံနေသောနေရာ", "Candle"], c:1}, {q:"Equal High အောက်မှာ ဘာရှိသလဲ?", a:["OB", "Liquidity", "BOS"], c:1}, {q:"Smart Money က Liquidity ကို ဘာလို့သုံးလဲ?", a:["Order ဖြည့်ရန်", "Trend ပြောင်းရန်", "နားရန်"], c:0}, {q:"Trendline အောက်မှာ ဘာရှိလဲ?", a:["Liquidity", "OB", "FVG"], c:0}, {q:"Stop Hunt ဆိုတာ ဘာလဲ?", a:["Profit ယူခြင်း", "Liquidity Sweep", "နားခြင်း"], c:1} ],
+            4: [ {q:"FVG ကို Candle ဘယ်နှခုနဲ့ ကြည့်ရမလဲ?", a:["၂ ခု", "၃ ခု", "၄ ခု"], c:1}, {q:"FVG ဖြစ်ရခြင်း အကြောင်းရင်း?", a:["Imbalance", "BOS", "News"], c:0}, {q:"Bullish FVG က ဘယ်နေရာလဲ?", a:["C1 High & C3 Low", "C2 size", "C1 Low"], c:0}, {q:"ဈေးက FVG ဆီ ဘာလို့ပြန်လာလဲ?", a:["Rebalance ရန်", "Trend ပြောင်းရန်", "နားရန်"], c:0}, {q:"အကောင်းဆုံး Entry က ဘယ်လိုလဲ?", a:["FVG တစ်ခုတည်း", "FVG + OB", "Gap ကြီးရင်"], c:1} ],
+            5: [ {q:"Top-Down Analysis ဆိုတာ?", a:["H -> L", "L -> H", "All same"], c:0}, {q:"Daily TF ကို ဘာအတွက်သုံးလဲ?", a:["Entry", "Trend Direction", "News"], c:1}, {q:"Lower TF ကို ဘာအတွက်သုံးလဲ?", a:["Execution", "Trend", "News"], c:0}, {q:"Market ပိုခိုင်မာတဲ့ TF က ဘယ်ဟာလဲ?", a:["1m", "15m", "Daily"], c:2}, {q:"HTF Trend နဲ့ LTF Setup ကိုက်ညီရမလား?", a:["ဟုတ်ကဲ့", "မဟုတ်ပါ", "မလိုပါ"], c:0} ],
+            6: [ {q:"Trading မှာ အရေးကြီးဆုံးက?", a:["BOS", "Risk Management", "Indicator"], c:1}, {q:"1% Rule ဆိုတာ?", a:["1% အရှုံးခံခြင်း", "1% အမြတ်ယူခြင်း", "All in"], c:0}, {q:"RR 1:3 ဆိုတာ?", a:["1 ရှုံး 3 မြတ်", "3 ရှုံး 1 မြတ်", "Equal"], c:0}, {q:"Lot size မှန်ကန်စွာ သုံးခြင်းကို ဘယ်လိုခေါ်လဲ?", a:["Gambling", "Position Sizing", "Scalping"], c:1}, {q:"Trader ၏ ပထမဆုံး တာဝန်?", a:["ချမ်းသာရန်", "အရင်းထိန်းရန်", "Lot ကြီးရိုက်ရန်"], c:1} ],
+            7: [ {q:"Trading အောင်မြင်ဖို့ အဓိက?", a:["Psychology", "Indicator", "News"], c:0}, {q:"ရှုံးတာကို ဇွတ်ပြန်ယူတာ ဘာလဲ?", a:["Swing", "Revenge Trading", "Scalping"], c:1}, {q:"FOMO ဆိုတာ?", a:["အခွင့်အရေးလွတ်မှာကြောက်ခြင်း", "အမြတ်ယူခြင်း", "နားခြင်း"], c:0}, {q:"Professional က Loss ကို ဘယ်လိုမြင်လဲ?", a:["Business Expense", "Failure", "Bad Luck"], c:0}, {q:"Win rate ထက် ပိုအရေးကြီးတာ?", a:["Discipline", "Lot size", "News"], c:0} ]
         };
 
         window.showLesson = (n) => {
-            currentL = n;
+            currentL = n; qIdx = 0;
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('n'+n).classList.add('active');
             document.getElementById('l-title').innerText = `Lesson ${n}: ${titles[n-1]}`;
@@ -106,14 +118,19 @@
             document.getElementById('lesson-view').classList.remove('hidden');
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('rank-view').classList.add('hidden');
-            updateBadge();
         };
 
         window.startQuiz = () => {
+            qIdx = 0;
             document.getElementById('lesson-view').classList.add('hidden');
             document.getElementById('quiz-view').classList.remove('hidden');
-            const data = questions[currentL];
-            document.getElementById('q-title').innerText = `Quiz: Lesson ${currentL}`;
+            loadQ();
+        };
+
+        function loadQ() {
+            const data = allQuestions[currentL][qIdx];
+            document.getElementById('q-count').innerText = `Question ${qIdx + 1} of 5`;
+            document.getElementById('p-fill').style.width = `${(qIdx / 5) * 100}%`;
             document.getElementById('q-text').innerText = data.q;
             const box = document.getElementById('options-box');
             box.innerHTML = "";
@@ -121,37 +138,36 @@
                 const btn = document.createElement('button');
                 btn.className = "option-btn";
                 btn.innerText = opt;
-                btn.onclick = () => checkAns(i, data.c);
+                btn.onclick = () => {
+                    if(i === data.c) {
+                        btn.classList.add('correct');
+                        qIdx++;
+                        setTimeout(() => { if(qIdx < 5) loadQ(); else finishQuiz(); }, 300);
+                    } else {
+                        btn.classList.add('wrong');
+                        setTimeout(() => { alert("မှားသွားပါတယ်၊ အစကနေ ပြန်ဖြေပေးပါဗျာ။"); startQuiz(); }, 500);
+                    }
+                };
                 box.appendChild(btn);
             });
-        };
-
-        async function checkAns(idx, correct) {
-            const btns = document.querySelectorAll('.option-btn');
-            btns.forEach(b => b.onclick = null); // Stop clicking
-            if(idx === correct) {
-                btns[idx].classList.add('correct');
-                const userRef = doc(db, "users", myUserId);
-                const userSnap = await getDoc(userRef);
-                let total = 5;
-                if(userSnap.exists()) total = (userSnap.data().total_score || 0) + 5;
-                await setDoc(userRef, { total_score: total }, { merge: true });
-                setTimeout(() => { alert("မှန်ကန်ပါတယ်! ၅ မှတ် ထပ်တိုးလိုက်ပါပြီ။"); showLesson(currentL); }, 500);
-            } else {
-                btns[idx].classList.add('wrong');
-                btns[correct].classList.add('correct');
-                setTimeout(() => { alert("မှားသွားပါတယ်၊ ပြန်ကြိုးစားကြည့်ပါ။"); showLesson(currentL); }, 1000);
-            }
         }
 
-        async function updateBadge() {
-            const userSnap = await getDoc(doc(db, "users", myUserId));
-            const score = userSnap.exists() ? (userSnap.data().total_score || 0) : 0;
-            const display = document.getElementById('user-rank-display');
-            if(score >= 35) { display.innerText = "🏆 Professional Trader"; display.className = "rank-badge badge-gold"; }
-            else if(score >= 20) { display.innerText = "⭐ Advanced Trader"; display.className = "rank-badge"; }
-            else if(score >= 5) { display.innerText = "📈 Junior Trader"; display.className = "rank-badge"; }
-            else { display.innerText = "🌱 Newbie Trader"; display.className = "rank-badge"; }
+        async function finishQuiz() {
+            document.getElementById('p-fill').style.width = "100%";
+            const userRef = doc(db, "users", myUserId);
+            const userSnap = await getDoc(userRef);
+            let total = 5;
+            if(userSnap.exists()) total = (userSnap.data().total_score || 0) + 5;
+            await setDoc(userRef, { total_score: total }, { merge: true });
+            alert("ဂုဏ်ယူပါတယ်! ၅ မှတ် ရရှိပါပြီ။");
+            showLesson(currentL);
+        }
+
+        function getLevelInfo(score) {
+            if(score >= 35) return { name: "Pro", class: "lvl-pro" };
+            if(score >= 20) return { name: "Adv", class: "lvl-adv" };
+            if(score >= 5) return { name: "Jun", class: "lvl-jun" };
+            return { name: "New", class: "lvl-new" };
         }
 
         window.showRank = async () => {
@@ -163,7 +179,16 @@
             tbody.innerHTML = "";
             let i = 1;
             snap.forEach(d => {
-                tbody.innerHTML += `<tr><td>${i}</td><td>${d.id.slice(0,4)}***</td><td>${d.data().total_score || 0}</td></tr>`;
+                const score = d.data().total_score || 0;
+                const lvl = getLevelInfo(score);
+                const rowClass = d.id === myUserId ? 'my-row' : '';
+                tbody.innerHTML += `
+                    <tr class="${rowClass}">
+                        <td>${i}</td>
+                        <td>${d.id.slice(0,4)}***</td>
+                        <td><span class="level-tag ${lvl.class}">${lvl.name}</span></td>
+                        <td>${score}</td>
+                    </tr>`;
                 i++;
             });
         };
